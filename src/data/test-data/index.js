@@ -1,5 +1,5 @@
-import { countries } from './countries-test';
-import { users } from './users-test';
-import { games } from './game-test';
+import { countries } from './countries-test.js';
+import { users } from './users-test.js';
+import { games } from './game-test.js';
 
 export { countries, users, games };
