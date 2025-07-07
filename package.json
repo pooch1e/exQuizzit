@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "NODE_ENV=test jest",
+    "seed": "ts-node prisma/seed.ts",
+    "seed:test": "NODE_ENV=test ts-node prisma/seed.ts",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:db:push": "dotenv -e .env.test -- npx prisma db push",
     "test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",

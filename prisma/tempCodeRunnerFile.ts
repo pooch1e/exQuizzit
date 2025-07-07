@@ -1,5 +1,5 @@
 import { main } from "./seed.ts";
-import { cleanTestDatabase } from "../src/app/lib/prisma.ts";
+import { cleanTestDatabase } from "@/app/lib/prisma.ts";
 
 
 beforeEach(async () => {

@@ -15,18 +15,23 @@ bun dev
 ```
 
 # Creating DB
+
 for testing - create .env.test file
 
 create your database eg in
+
 ```psql
 createdb my_test_database;
 
 confirm it is created
 psql \d
 
-add to .env.test file 
+add to .env.test file
 DATABASE_URL = my_test_database
 
+
+SEED TEST DB WITH TEST DATA
+seed:test": "NODE_ENV=test ts-node prisma/seed.ts",
 
 # Jest for Test-DB
 
@@ -64,3 +69,4 @@ npm run test:db:push
 # Or if you prefer migrations
 
 npm run test:db:migrate
+```
