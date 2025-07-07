@@ -61,6 +61,10 @@ setup
 
 npm install -D dotenv-cli
 
+# Also tsx
+
+npm install tsx
+
 # Push your schema to the test database
 
 npm run test:db:push
