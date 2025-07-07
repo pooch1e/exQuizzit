@@ -8,12 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "ts-node prisma/seed.ts",
-    "test": "NODE_ENV=test NODE_OPTIONS='--loader=ts-node/esm' jest",
-    "test:watch": "NODE_ENV=test NODE_OPTIONS='--loader=ts-node/esm' jest --watch",
-    "test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch",
     "test:db:push": "dotenv -e .env.test -- npx prisma db push",
+    "test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
     "test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
+    "test:db:studio": "dotenv -e .env.test -- npx prisma studio",
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
@@ -21,7 +21,8 @@
     "dotenv": "^17.0.1",
     "next": "15.3.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -30,6 +31,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "jest": "^30.0.4",

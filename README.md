@@ -38,15 +38,33 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # Jest for Test-DB
 
 Add to package.json under 'scripts'
-"seed": "ts-node prisma/seed.ts",
-"test": "NODE_ENV=test NODE_OPTIONS='--loader=ts-node/esm' jest",
-"test:watch": "NODE_ENV=test NODE_OPTIONS='--loader=ts-node/esm' jest --watch",
-"test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
+"dev": "next dev",
+"build": "next build",
+"start": "next start",
+"lint": "next lint",
+"test": "NODE_ENV=test jest",
+"test:watch": "NODE_ENV=test jest --watch",
 "test:db:push": "dotenv -e .env.test -- npx prisma db push",
+"test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
 "test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
+"test:db:studio": "dotenv -e .env.test -- npx prisma studio",
 "db:seed": "tsx prisma/seed.ts"
 
 and to 'prisma'
 "seed": "tsx prisma/seed.ts"
 
 create jest.config.js file
+
+setup
+
+# Install dotenv-cli if you haven't
+
+npm install -D dotenv-cli
+
+# Push your schema to the test database
+
+npm run test:db:push
+
+# Or if you prefer migrations
+
+npm run test:db:migrate
