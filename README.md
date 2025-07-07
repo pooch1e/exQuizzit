@@ -34,3 +34,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Jest for Test-DB
+
+Add to package.json under 'scripts'
+"seed": "ts-node prisma/seed.ts",
+"test": "NODE_ENV=test NODE_OPTIONS='--loader=ts-node/esm' jest",
+"test:watch": "NODE_ENV=test NODE_OPTIONS='--loader=ts-node/esm' jest --watch",
+"test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
+"test:db:push": "dotenv -e .env.test -- npx prisma db push",
+"test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
+"db:seed": "tsx prisma/seed.ts"
+
+and to 'prisma'
+"seed": "tsx prisma/seed.ts"
+
+create jest.config.js file
