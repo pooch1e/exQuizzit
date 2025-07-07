@@ -2,8 +2,10 @@
 import prisma from "../src/app/lib/connections";
 import {users, countries, games} from '../src/data/test-data/index'
 
-async function main() {
-  
+export async function main() {
+  try {
+
+
   await prisma.game.deleteMany({})
   await prisma.user.deleteMany({})
   await prisma.countries.deleteMany({})
@@ -25,6 +27,10 @@ async function main() {
     data: games,
     skipDuplicates: true
   })
+    } catch (err) {
+      console.log(err, 'Error during seeding')
+      throw err;
+    }
 }
 
 main()
