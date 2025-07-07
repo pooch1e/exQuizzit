@@ -14,42 +14,34 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Creating DB
+for testing - create .env.test file
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+create your database eg in
+```psql
+createdb my_test_database;
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+confirm it is created
+psql \d
 
-## Learn More
+add to .env.test file 
+DATABASE_URL = my_test_database
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 # Jest for Test-DB
 
-Add to package.json under 'scripts'
-"dev": "next dev",
-"build": "next build",
-"start": "next start",
-"lint": "next lint",
-"test": "NODE_ENV=test jest",
-"test:watch": "NODE_ENV=test jest --watch",
-"test:db:push": "dotenv -e .env.test -- npx prisma db push",
-"test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
-"test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
-"test:db:studio": "dotenv -e .env.test -- npx prisma studio",
-"db:seed": "tsx prisma/seed.ts"
-
+*Add to package.json under* 'scripts'
+- "dev": "next dev",
+- "build": "next build",
+- "start": "next start",
+- "lint": "next lint",
+- "test": "NODE_ENV=test jest",
+- "test:watch": "NODE_ENV=test jest --watch",
+- "test:db:push": "dotenv -e .env.test -- npx prisma db push",
+- "test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
+- "test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
+- "test:db:studio": "dotenv -e .env.test -- npx prisma studio",
+- "db:seed": "tsx prisma/seed.ts"
 and to 'prisma'
 "seed": "tsx prisma/seed.ts"
 
