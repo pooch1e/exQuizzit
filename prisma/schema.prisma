@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -12,4 +9,40 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  userId           String   @id @default(dbgenerated()) @map("id")
+  email            String   @unique
+  userName         String
+  avatar           String?
+  highScore        Int      @default(0)
+  quizzBuckTotal   Int      @default(0)
+  questionsCorrect Int      @default(0)
+  createdAt        DateTime @default(now())
+  games            Game[]
+
+  @@map("users") // Syncs with actual database table name
+}
+
+model Countries {
+  userId     Int    @id @map("id")
+  name       String
+  flagUrl    String
+  capital    String
+  currency   String
+  population Int
+
+  @@map("countries")
+}
+
+model Game {
+  id        String   @id @default(uuid()) // Unique ID for the Game record
+  score     Int
+  createdAt DateTime @default(now())
+  userId    String // Foreign key matching User.id
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("games")
 }
