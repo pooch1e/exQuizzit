@@ -23,7 +23,7 @@ const API_URL = 'https://restcountries.com/v3.1/all?fields=name,flags,currencies
 const run = async (): Promise<void> => {
   try {
     const res = await fetch(API_URL);
-    const countries: Country[] = await res.json();
+    const countries = (await res.json()) as Country[];
 
     const formatted: FormattedCountry[] = countries.map((c, index) => ({
       userId: index + 1,
