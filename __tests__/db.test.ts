@@ -299,3 +299,75 @@ describe('testing test-seed database', () => {
     console.log(game) // ensuring test is working
   });
 })
+
+describe('testing games table', () => {
+  test('games has user id column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          id : 'game-001'
+        }
+      })
+      expect(game).toHaveProperty('id')
+      expect(game).not.toBeUndefined();
+    })
+      test('games has user id column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          id : 'game-001'
+        }
+      })
+      expect(typeof game?.id).toBe('string')
+    })
+      test('games has user score column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          score : 1200
+        }
+      })
+      expect(game).toHaveProperty('score')
+      expect(game).not.toBeUndefined();
+    })
+      test('games has score column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          score : 1200
+        }
+      })
+      expect(typeof game?.score).toBe('number')
+    })
+      test('games has user created_at column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          createdAt : '2024-07-01T10:15:00Z'
+        }
+      })
+      expect(game).toHaveProperty('createdAt')
+      expect(game).not.toBeUndefined();
+    })
+      test('games has created At column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          createdAt : '2024-07-01T10:15:00Z'
+        }
+      })
+      expect(game?.createdAt instanceof Date).toBe(true)
+    })
+      test('games has user userId column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          userId : 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        }
+      })
+      expect(game).toHaveProperty('userId')
+      expect(game).not.toBeUndefined();
+    })
+      test('games has created At column', async () => {
+      const game = await prisma.game.findFirst({
+        where: {
+          userId : 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        }
+      })
+      expect(typeof game?.userId).toBe('string');
+    })
+
+})
