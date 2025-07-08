@@ -1,6 +1,6 @@
 {
   "name": "exquizzit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",
+    "@supabase/supabase-js": "^2.50.3",
     "dotenv": "^17.0.1",
     "next": "15.3.4",
     "node-fetch": "^3.3.2",
