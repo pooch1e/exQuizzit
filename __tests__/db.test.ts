@@ -288,7 +288,7 @@ describe('testing test-seed database', () => {
         }
       })
       console.log(user?.createdAt)
-      expect(typeof user?.createdAt).toBe('');
+      expect(user?.createdAt instanceof Date).toBe(true);
     })
   })
 
