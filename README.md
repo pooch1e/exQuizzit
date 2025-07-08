@@ -31,7 +31,7 @@ DATABASE_URL = my_test_database
 
 
 SEED TEST DB WITH TEST DATA
-seed:test": "NODE_ENV=test ts-node prisma/seed.ts",
+seed:test": "NODE_ENV=test ts-node prisma/seed.ts", -- not sure if working
 
 # Jest for Test-DB
 
@@ -52,6 +52,8 @@ and to 'prisma'
 
 create jest.config.js file
 
+
+
 setup
 
 # Install dotenv-cli if you haven't
@@ -70,3 +72,4 @@ npm run test:db:push
 
 npm run test:db:migrate
 ```
+To test database, will have to add to test-seed file any new models and reintergrate. Then in test suite, set up and tear down db before each test.
