@@ -1,9 +1,9 @@
 // prisma/seed.ts
 import { prisma } from "../src/app/lib/prisma.ts"; 
-import { users, countries, games } from '../src/data/test-data/index.js';
+//import actual data here 
 
 async function main() {
-  console.log('Starting test database seeding...');
+  console.log('Starting database seeding');
   
   try {
     // Clean existing data in correct order (respecting foreign key constraints)
@@ -34,7 +34,6 @@ async function main() {
     });
     console.log(`Seeded ${createdGames.count} games`);
     
-    console.log('Test database seeding completed successfully!');
     
   } catch (error) {
     console.error('Error during seeding:', error);

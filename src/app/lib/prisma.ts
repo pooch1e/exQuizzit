@@ -1,4 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment-specific .env file
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -11,6 +17,7 @@ const createPrismaClient = () => {
         url: process.env.DATABASE_URL,
       },
     },
+
   });
 };
 
@@ -26,13 +33,10 @@ export const cleanTestDatabase = async () => {
     throw new Error('cleanTestDatabase can only be used in test environment');
   }
   
-  // Get all table names from your Prisma schema
-  // Replace these with your actual table names
-  const tablenames = await prisma.$queryRaw<Array<{tablename: string}>>`
+  const tablenames = await prisma.$queryRaw<Array<{ tablename: string }>>`
     SELECT tablename FROM pg_tables WHERE schemaname='public'
   `;
   
-  // Clean all tables
   for (const { tablename } of tablenames) {
     if (tablename !== '_prisma_migrations') {
       await prisma.$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`);
@@ -45,8 +49,7 @@ export const resetTestSequences = async () => {
     throw new Error('resetTestSequences can only be used in test environment');
   }
   
-  // Reset all sequences (for auto-incrementing IDs)
-  const sequences = await prisma.$queryRaw<Array<{sequence_name: string}>>`
+  const sequences = await prisma.$queryRaw<Array<{ sequence_name: string }>>`
     SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public'
   `;
   

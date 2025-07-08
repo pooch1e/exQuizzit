@@ -1,27 +1,32 @@
 // jest.setup.ts
-import { loadEnvConfig } from '@next/env';
 
-// Load test environment variables
-loadEnvConfig(process.cwd(), true);
+import { prisma, cleanTestDatabase, resetTestSequences } from './src/app/lib/prisma.ts';
+import { seedTestDatabase } from './prisma/seed-test-db.ts';
 
-beforeEach(async () => {
-  // Import the functions you need
-  const { cleanTestDatabase, resetTestSequences } = await import('./src/app/lib/prisma.ts');
-  const { main } = await import('./prisma/seed.ts'); 
-  
-  // Clean the database
-  await cleanTestDatabase();
-  
-  // Reset sequences if the function exists
-  if (resetTestSequences) {
-    await resetTestSequences();
+
+beforeAll(async () => {
+  // Ensure we're in test environment
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('Tests must be run with NODE_ENV=test');
   }
   
+  // Clean and reset the database
+  await cleanTestDatabase();
+  await resetTestSequences();
+  
   // Seed with test data
-  await main();
+  await seedTestDatabase(prisma);
 });
 
+// Clean up after each test
+afterEach(async () => {
+  
+  await cleanTestDatabase();
+  await resetTestSequences();
+  await seedTestDatabase(prisma);
+});
+
+// Global test teardown
 afterAll(async () => {
-  const { prisma } = await import('./src/app/lib/prisma.ts');
   await prisma.$disconnect();
 });
