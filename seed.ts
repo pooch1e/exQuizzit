@@ -1,6 +1,7 @@
 //seed file
 import prisma from "./src/app/lib/connections.ts";
-import { users, countries, games } from "./src/data/test-data/index.js";
+import { countries } from "./src/data/development-data/countries-data.js";
+import { users, games } from "./src/data/test-data/index.js";
 
 async function main() {
   await prisma.game.deleteMany({});
