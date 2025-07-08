@@ -137,6 +137,161 @@ describe('testing test-seed database', () => {
     
   });
 
+  describe('test users table', () => {
+    test('user has userId column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          userId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        }
+      })
+      expect(user).toHaveProperty('userId');
+      expect(user?.userId).not.toBeUndefined();
+    })
+
+    test('userId is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          userId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        }
+      })
+      expect(typeof user?.userId).toBe('string')
+    })
+
+    test('user to have email column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          email: 'alice@example.com'
+        }
+      })
+      expect(user).toHaveProperty('email');
+      expect(user?.email).not.toBeUndefined();
+    })
+
+    test('email is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          email: 'alice@example.com'
+        }
+      })
+      expect(typeof user?.email).toBe('string');
+    })
+
+    test('user to have userName column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          userName: 'Alice'
+        }
+      })
+      expect(user).toHaveProperty('userName');
+      expect(user?.userName).not.toBeUndefined();
+    })
+
+    test('userName is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          userName: 'Alice'
+        }
+      })
+      expect(typeof user?.userName).toBe('string');
+    })
+
+    test('user to have avatar column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          avatar: 'https://api.dicebear.com/6.x/thumbs/svg?seed=Alice'
+        }
+      })
+      expect(user).toHaveProperty('avatar');
+      expect(user?.avatar).not.toBeUndefined();
+    })
+
+    test('avatar is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          avatar: 'https://api.dicebear.com/6.x/thumbs/svg?seed=Alice'
+        }
+      })
+      expect(typeof user?.avatar).toBe('string');
+    })
+
+    test('user to have highScore column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          highScore: 1200
+        }
+      })
+      expect(user).toHaveProperty('highScore');
+      expect(user?.highScore).not.toBeUndefined();
+    })
+
+    test('highScore is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          highScore: 1200
+        }
+      })
+      expect(typeof user?.highScore).toBe('number');
+    })
+
+    test('user to have quizzBuckTotal column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          quizzBuckTotal: 500
+        }
+      })
+      expect(user).toHaveProperty('quizzBuckTotal');
+      expect(user?.quizzBuckTotal).not.toBeUndefined();
+    })
+
+    test('quizzBuckTotal is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          quizzBuckTotal: 500
+        }
+      })
+      expect(typeof user?.quizzBuckTotal).toBe('number');
+    })
+
+    test('user to have questionsCorrect column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          questionsCorrect: 87
+        }
+      })
+      expect(user).toHaveProperty('questionsCorrect');
+      expect(user?.questionsCorrect).not.toBeUndefined();
+    })
+
+    test('questionsCorrect is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          questionsCorrect: 87
+        }
+      })
+      expect(typeof user?.questionsCorrect).toBe('number');
+    })
+
+    test('user to have createdAt column', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          createdAt: new Date('2024-07-01T10:00:00Z')
+        }
+      })
+      expect(user).toHaveProperty('createdAt');
+      expect(user?.createdAt).not.toBeUndefined();
+    })
+
+    test('createdAt is of type string', async () => {
+      const user = await prisma.user.findFirst({
+        where: {
+          createdAt: new Date('2024-07-01T10:00:00Z')
+        }
+      })
+      console.log(user?.createdAt)
+      expect(typeof user?.createdAt).toBe('');
+    })
+  })
+
   test('should find seeded games table', async () => {
     // console.log(process.env) //showing test env
     const game = await prisma.game.findMany();
