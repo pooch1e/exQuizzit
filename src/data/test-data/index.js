@@ -1,4 +1,4 @@
-import { countries } from './countries-test.js';
+import { countries } from '../countries-data.js';
 import { users } from './users-test.js';
 import { games } from './game-test.js';
 
