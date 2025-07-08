@@ -19,6 +19,6 @@ describe('testing test-seed database', () => {
     // console.log(process.env) //showing test env
     const countries = await prisma.countries.findMany();
     expect(countries.length).toBeGreaterThan(0);
-    console.log(countries)
+    console.log(countries) // ensuring test is working
   });
 })
