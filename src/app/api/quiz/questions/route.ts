@@ -1,124 +1,34 @@
+// app/api/quiz/route.ts
 import { NextResponse } from 'next/server';
-import { shuffleArray } from '../../../lib/utils/shuffleArray.ts';
-import { decodeHTML } from '../../../lib/utils/decodeHTML.ts';
-import { countries } from '../../../../data/development-data/countries-data.js'; //! change to supabase
-
-interface Country {
-  userId: number;
-  name: string;
-  flagUrl: string;
-  capital: string;
-  currency: string;
-  population: number;
-}
-
-interface TriviaQuestion {
-  category: string;
-  type: string;
-  difficulty: string;
-  question: string;
-  correct_answer: string;
-  incorrect_answers: string[];
-}
-
-interface Question {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: string;
-  country?: Country;
-  flagOptions?: Country[];
-  type: 'flag' | 'trivia';
-}
-
-
-function generateFlagOptions(correct: Country, allCountries: Country[]): Country[] {
-  const options = [correct];
-  const otherCountries = allCountries.filter(c => c.userId !== correct.userId);
-  
-  while (options.length < 4) {
-    const randomCountry = otherCountries[Math.floor(Math.random() * otherCountries.length)];
-    if (!options.find(option => option.userId === randomCountry.userId)) {
-      options.push(randomCountry);
-    }
-  }
-  
-  return shuffleArray(options);
-}
-
+import { TriviaService } from '../../../lib/services/triviaService';
+import { CountryService } from '../../../lib/services/CountryService';
+import { QuestionService } from '../../../lib/services/QuestionService';
 export async function GET(request: Request) {
   try {
-    // Fetch trivia questions from our API with increased timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-    
-    let triviaQuestions: TriviaQuestion[] = [];
-    
-    try {
-      // Get the host from the request headers to support any port
-      const url = new URL(request.url);
-      const baseUrl = `${url.protocol}//${url.host}`;
-      
-      const triviaResponse = await fetch(
-        `${baseUrl}/api/trivia`,
-        { 
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-      
-      clearTimeout(timeoutId);
-      
-      if (triviaResponse.ok) {
-        const triviaData = await triviaResponse.json();
-        if (triviaData.success && triviaData.data) {
-          triviaQuestions = triviaData.data;
-          console.log(`Loaded ${triviaQuestions.length} trivia questions`);
-        } else {
-          console.log('No trivia data available or API failed');
-        }
-      } else {
-        console.log(`Trivia API request failed with status: ${triviaResponse.status}`);
-      }
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-      console.error('Error fetching trivia questions:', fetchError);
-      console.log('Continuing with flag questions only');
-    }
+    // Initialize services
+    const triviaService = new TriviaService();
+    const countryService = new CountryService();
+    const quizService = new QuestionService();
 
-    // Generate flag questions from a limited set of countries (30 for better performance)
-    const limitedCountries = countries.slice(0, 30);
-    const flagQuestions: Question[] = limitedCountries.map((country: Country, index: number) => {
-      const flagOptions = generateFlagOptions(country, limitedCountries);
-      return {
-        id: index + 1,
-        question: `What is the national flag of ${country.name}?`,
-        options: flagOptions.map(c => c.name),
-        correctAnswer: country.name,
-        country,
-        flagOptions,
-        type: 'flag'
-      };
-    });
+    // Get base URL for trivia API
+    const url = new URL(request.url);
+    const baseUrl = `${url.protocol}//${url.host}`;
 
-    // Generate trivia questions if available (limit to 20 for better performance)
-    const triviaQuestionsLimited = triviaQuestions.slice(0, 20);
-    const triviaQuestionsMapped: Question[] = triviaQuestionsLimited.map((trivia, index) => ({
-      id: index + flagQuestions.length + 1,
-      question: decodeHTML(trivia.question),
-      options: shuffleArray([
-        decodeHTML(trivia.correct_answer),
-        ...trivia.incorrect_answers.map(answer => decodeHTML(answer))
-      ]),
-      correctAnswer: decodeHTML(trivia.correct_answer),
-      type: 'trivia'
-    }));
+    // Fetch data in parallel
+    const [triviaQuestions, countries] = await Promise.all([
+      triviaService.fetchQuestions(baseUrl),
+      countryService.getCountries(),
+    ]);
 
-    // Combine and shuffle all questions
+    // Generate questions
+    const flagQuestions = quizService.generateFlagQuestions(countries);
+    const triviaQuestionsMapped = quizService.generateTriviaQuestions(
+      triviaQuestions.slice(0, 20) // Limit for performance
+    );
+
+    // Combine and shuffle
     const allQuestions = [...flagQuestions, ...triviaQuestionsMapped];
-    const shuffledQuestions = shuffleArray(allQuestions);
+    const shuffledQuestions = quizService.combineAndShuffle(allQuestions);
 
     return NextResponse.json({
       success: true,
@@ -126,39 +36,18 @@ export async function GET(request: Request) {
       stats: {
         flagQuestions: flagQuestions.length,
         triviaQuestions: triviaQuestionsMapped.length,
-        total: shuffledQuestions.length
-      }
+        total: shuffledQuestions.length,
+      },
     });
-
   } catch (error) {
     console.error('Error generating quiz questions:', error);
-    
-    // Fallback to just flag questions (limited for performance)
-    const limitedCountries = countries.slice(0, 30);
-    const flagQuestions: Question[] = limitedCountries.map((country: Country, index: number) => {
-      const flagOptions = generateFlagOptions(country, limitedCountries);
-      return {
-        id: index + 1,
-        question: `What is the national flag of ${country.name}?`,
-        options: flagOptions.map(c => c.name),
-        correctAnswer: country.name,
-        country,
-        flagOptions,
-        type: 'flag'
-      };
-    });
 
-    const shuffledQuestions = shuffleArray(flagQuestions);
-
-    return NextResponse.json({
-      success: true,
-      questions: shuffledQuestions,
-      fallback: true,
-      stats: {
-        flagQuestions: flagQuestions.length,
-        triviaQuestions: 0,
-        total: shuffledQuestions.length
-      }
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to generate quiz questions',
+      },
+      { status: 500 }
+    );
   }
 }
