@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { shuffleArray } from '../src/app/lib/utils/shuffleArray';
 import { decodeHTML } from '../src/app/lib/utils/decodeHTML.ts';
 describe('shuffling array util function', () => {
@@ -41,3 +42,15 @@ describe('testing decode HTML util', () => {
     expect(decodeHTML('2 is &gt; than 4')).toBe('2 is > than 4');
   });
 });
+=======
+import { shuffleArray } from "@/app/lib/utils/shuffleArray.ts"
+describe('shuffling array util function', () => {
+  test('when passed empty array, returns emtpy array', () => {
+    const testData = ['Australia', 'Japan', 'Mexico']
+    const actual = shuffleArray(testData)
+    expect(actual).toEqual()
+  })
+  test.todo('when passed array with single item, returns single item')
+  test.todo('when passed array of multiple items, returns array with items shuffled')
+})
+>>>>>>> main
