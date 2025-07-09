@@ -1,115 +1,28 @@
-"use client";
+import Link from 'next/link';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "./lib/supabaseClient";
-import { v4 as uuidv4 } from "uuid";
-
-export default function SeedUserPage() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const router = useRouter();
-
-  async function handleSeedSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (!username || !email) {
-      setErrorMessage("Please fill in both username and email.");
-      return;
-    }
-
-    const { error } = await supabase.from("users").insert([
-      
-      {
-        id: uuidv4(), // generates a random UUID
-        email,
-        userName: username,
-        createdAt: new Date().toISOString(),
-        highScore: 0,
-        quizzBuckTotal: 0,
-        questionsCorrect: 0,
-        avatar: null,
-      },
-    ]);
-
-    if (error) {
-      console.error("Insert failed:", error.message);
-      setErrorMessage("❌ Failed to add user to database.");
-    } else {
-      setSuccessMessage("✅ User added successfully!");
-      setUsername("");
-      setEmail("");
-
-      setTimeout(() => {
-        router.push("/home");
-      }, 1000);
-    }
-  }
-
+export default function Home() {
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700">
-      <form
-        onSubmit={handleSeedSubmit}
-        className="bg-white bg-opacity-90 p-8 rounded-xl shadow-2xl w-full max-w-md border-4 border-yellow-400"
-      >
-        <h1 className="text-3xl font-extrabold text-center text-blue-700 mb-6 drop-shadow-md">
-          🎮 exQuizzit
-        </h1>
-
-        {/* Email */}
-        <label className="block mb-2 font-semibold text-gray-700">Email</label>
-        <div className="flex items-center border-2 border-blue-400 rounded mb-4 px-3 py-2">
-          <span className="text-xl text-gray-600 mr-2">📧</span>
-          <input
-            type="email"
-            className="w-full focus:outline-none bg-transparent"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-2">exQuizzit</h1>
+        <p className="text-gray-600 mb-8">Test your knowledge of countries around the world!</p>
+        
+        <div className="space-y-4">
+          <Link 
+            href="/quiz"
+            className="block w-full bg-indigo-600 text-white py-4 px-6 rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-lg"
+          >
+            Start Quiz 🚀
+          </Link>
+          
+          <Link 
+            href="/leaderboard"
+            className="block w-full bg-gray-200 text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+          >
+            View Leaderboard 🏆
+          </Link>
         </div>
-
-        {/* Username */}
-        <label className="block mb-2 font-semibold text-gray-700">
-          Username
-        </label>
-        <div className="flex items-center border-2 border-blue-400 rounded mb-4 px-3 py-2">
-          <span className="text-xl text-gray-600 mr-2">🎮</span>
-          <input
-            type="text"
-            className="w-full focus:outline-none bg-transparent"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-
-        {/* Error */}
-        {errorMessage && (
-          <p className="text-red-600 text-sm font-semibold mb-4">
-            {errorMessage}
-          </p>
-        )}
-
-        {/* Success */}
-        {successMessage && (
-          <p className="text-green-600 text-sm font-semibold mb-4">
-            {successMessage}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          className="w-full bg-yellow-400 text-blue-900 font-bold py-2 rounded hover:bg-yellow-300 transition duration-200 shadow-md"
-        >
-          🚀 Seed User
-        </button>
-      </form>
-    </main>
+      </div>
+    </div>
   );
 }
