@@ -30,7 +30,6 @@ interface Question {
   flagOptions?: Country[];
   type: 'flag' | 'trivia';
 }
-//TODO extract out utils
 
 
 function generateFlagOptions(correct: Country, allCountries: Country[]): Country[] {
