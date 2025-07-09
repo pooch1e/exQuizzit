@@ -7,7 +7,7 @@ export class QuestionService {
 
       return {
         id: index + 1,
-        question: `What is the national flag of ${country.name}?`,
+        question: `Which country does this flag belong to?`,
         options: flagOptions.map((c) => c.name),
         correctAnswer: country.name,
         country,
