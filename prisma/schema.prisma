@@ -13,7 +13,7 @@ datasource db {
 
 model User {
   userId           String   @id @default(dbgenerated()) @map("id")
-  email            String?   @unique
+  email            String   @unique
   userName         String?
   avatar           String?
   highScore        Int      @default(0)
