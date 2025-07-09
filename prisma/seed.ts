@@ -1,6 +1,6 @@
 // prisma/seed.ts
 import { prisma } from "../src/app/lib/prisma.ts"; 
-import { countries } from "@/data/development-data/countries-data.js";
+import { countries } from "../src/data/development-data/countries-data.js";
 
 async function main() {
   console.log('Starting database seeding');
