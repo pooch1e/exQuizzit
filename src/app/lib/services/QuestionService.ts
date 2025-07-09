@@ -1,6 +1,7 @@
 import { shuffleArray } from '../utils/shuffleArray.ts';
 import { decodeHTML } from '../utils/decodeHTML.ts';
 
+
 export class QuestionService {
   generateFlagQuestions(countries: Country[]): Question[] {
     return countries.map((country, index) => {
