@@ -1,19 +1,15 @@
 import { shuffleArray } from '../utils/shuffleArray.ts';
 import { decodeHTML } from '../utils/decodeHTML.ts';
 
-
 export class QuestionService {
   generateFlagQuestions(countries: Country[]): Question[] {
     return countries.map((country, index) => {
       const flagOptions = this.generateFlagOptions(country, countries);
-
       return {
         id: index + 1,
-        question: `Which country does this flag belong to?`,
-        options: flagOptions.map((c) => c.name),
-        correctAnswer: country.name,
-        country,
-        flagOptions,
+        question: `Which flag belongs to ${country.name}?`, // Just text question
+        options: flagOptions.map((c) => c.flagUrl), // Flag URLs as options
+        correctAnswer: country.flagUrl,
         type: 'flag',
       };
     });
