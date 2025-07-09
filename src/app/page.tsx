@@ -1,6 +1,51 @@
 import Link from 'next/link';
 
-export default function Home() {
+export default function SeedUserPage() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const router = useRouter();
+
+  async function handleSeedSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (!username || !email) {
+      setErrorMessage("Please fill in both username and email.");
+      return;
+    }
+
+    const { error } = await supabase.from("users").insert([
+      
+      {
+        id: uuidv4(), // generates a random UUID
+        email,
+        userName: username,
+        createdAt: new Date().toISOString(),
+        highScore: 0,
+        quizzBuckTotal: 0,
+        questionsCorrect: 0,
+        avatar: null,
+      },
+    ]);
+
+    if (error) {
+      console.error("Insert failed:", error.message);
+      setErrorMessage("❌ Failed to add user to database.");
+    } else {
+      setSuccessMessage("✅ User added successfully!");
+      setUsername("");
+      setEmail("");
+
+      setTimeout(() => {
+        router.push("/home");
+      }, 1000);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
