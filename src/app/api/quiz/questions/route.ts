@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { shuffleArray } from '../../../lib/utils/shuffleArray.ts';
-import { countries } from '../../../../data/development-data/countries-data.js';
-
-// change to supabase
+import { decodeHTML } from '../../../lib/utils/decodeHTML.ts';
+import { countries } from '../../../../data/development-data/countries-data.js'; //! change to supabase
 
 interface Country {
   userId: number;
@@ -33,15 +32,6 @@ interface Question {
 }
 //TODO extract out utils
 
-
-function decodeHTML(html: string): string {
-  return html
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>');
-}
 
 function generateFlagOptions(correct: Country, allCountries: Country[]): Country[] {
   const options = [correct];
