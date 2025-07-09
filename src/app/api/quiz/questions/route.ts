@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { countries } from '../../../../data/development-data/countries-data.js';
+// import { countries } from '../../../../data/development-data/countries-data.js'; //TODO link this to supabase
+import { prisma } from '../../../lib/prisma';
 
 interface Country {
   userId: number;
@@ -30,6 +31,7 @@ interface Question {
 }
 
 // Utility functions
+// TODO extract this to util file
 function shuffleArray<T>(array: T[]): T[] {
   return [...array].sort(() => Math.random() - 0.5);
 }
@@ -56,6 +58,7 @@ function generateFlagOptions(correct: Country, allCountries: Country[]): Country
   
   return shuffleArray(options);
 }
+
 
 export async function GET(request: Request) {
   try {
@@ -99,6 +102,16 @@ export async function GET(request: Request) {
       console.log('Continuing with flag questions only');
     }
 
+    //TODO fetch countries from supabase client
+    // const fetchCountries = async => {
+    //   try {
+
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    // }
+
+    
     // Generate flag questions from a limited set of countries (30 for better performance)
     const limitedCountries = countries.slice(0, 30);
     const flagQuestions: Question[] = limitedCountries.map((country: Country, index: number) => {
