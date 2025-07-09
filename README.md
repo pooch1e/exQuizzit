@@ -72,4 +72,17 @@ npm run test:db:push
 
 npm run test:db:migrate
 ```
+
 To test database, will have to add to test-seed file any new models and reintergrate. Then in test suite, set up and tear down db before each test.
+
+# API/ROUTES
+
+# SERVICES
+
+- util classes for api fetching and handling
+
+* Responsiblities
+  - TriviaService: Handles external API calls, timeouts, error handling
+  - CountryService: Manages data access (database/fallback data)
+  - QuizService: Contains logic for question generation
+  - API Handler: Orchestrates services and handles HTTP concerns

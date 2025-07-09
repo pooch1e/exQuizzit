@@ -1,3 +1,4 @@
+// app/api/quiz/route.ts
 import { NextResponse } from 'next/server';
 // import { countries } from '../../../../data/development-data/countries-data.js'; //TODO link this to supabase
 import { prisma } from '../../../lib/prisma';
@@ -142,7 +143,7 @@ export async function GET(request: Request) {
 
     // Combine and shuffle all questions
     const allQuestions = [...flagQuestions, ...triviaQuestionsMapped];
-    const shuffledQuestions = shuffleArray(allQuestions);
+    const shuffledQuestions = quizService.combineAndShuffle(allQuestions);
 
     return NextResponse.json({
       success: true,
@@ -150,39 +151,18 @@ export async function GET(request: Request) {
       stats: {
         flagQuestions: flagQuestions.length,
         triviaQuestions: triviaQuestionsMapped.length,
-        total: shuffledQuestions.length
-      }
+        total: shuffledQuestions.length,
+      },
     });
-
   } catch (error) {
     console.error('Error generating quiz questions:', error);
-    
-    // Fallback to just flag questions (limited for performance)
-    const limitedCountries = countries.slice(0, 30);
-    const flagQuestions: Question[] = limitedCountries.map((country: Country, index: number) => {
-      const flagOptions = generateFlagOptions(country, limitedCountries);
-      return {
-        id: index + 1,
-        question: `What is the national flag of ${country.name}?`,
-        options: flagOptions.map(c => c.name),
-        correctAnswer: country.name,
-        country,
-        flagOptions,
-        type: 'flag'
-      };
-    });
 
-    const shuffledQuestions = shuffleArray(flagQuestions);
-
-    return NextResponse.json({
-      success: true,
-      questions: shuffledQuestions,
-      fallback: true,
-      stats: {
-        flagQuestions: flagQuestions.length,
-        triviaQuestions: 0,
-        total: shuffledQuestions.length
-      }
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to generate quiz questions',
+      },
+      { status: 500 }
+    );
   }
 }
