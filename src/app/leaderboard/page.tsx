@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import SpaceBackground from '@/components/SpaceBackground';
 
 interface Game {
   id: string;
@@ -50,12 +51,12 @@ export default function LeaderboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <SpaceBackground className="flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-xl text-gray-600">Loading Leaderboard...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-400 mx-auto"></div>
+          <p className="mt-4 text-xl text-blue-200">Loading Leaderboard...</p>
         </div>
-      </div>
+      </SpaceBackground>
     );
   }
 
@@ -78,23 +79,23 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <SpaceBackground className="p-4">
       <div className="max-w-4xl mx-auto pt-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">🏆 Leaderboard</h1>
-          <p className="text-gray-600">See how you rank against other players!</p>
+          <h1 className="text-4xl font-bold text-white mb-2">🏆 Leaderboard</h1>
+          <p className="text-blue-200">See how you rank against other players!</p>
         </div>
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-6">
-          <div className="bg-white rounded-lg p-1 shadow-md">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1 shadow-md border border-white/20">
             <button
               onClick={() => setActiveTab('highscores')}
               className={`px-6 py-2 rounded-md font-medium transition-colors ${
                 activeTab === 'highscores'
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-purple-600 text-white'
+                  : 'text-blue-200 hover:text-white'
               }`}
             >
               High Scores
@@ -103,8 +104,8 @@ export default function LeaderboardPage() {
               onClick={() => setActiveTab('recent')}
               className={`px-6 py-2 rounded-md font-medium transition-colors ${
                 activeTab === 'recent'
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-purple-600 text-white'
+                  : 'text-blue-200 hover:text-white'
               }`}
             >
               Recent Games
@@ -113,7 +114,7 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
           {activeTab === 'highscores' && (
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Top Players</h2>
@@ -186,20 +187,20 @@ export default function LeaderboardPage() {
         <div className="text-center mt-8 space-y-4">
           <Link
             href="/quiz"
-            className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-lg"
+            className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold text-lg"
           >
             Play Quiz 🚀
           </Link>
           <div>
             <Link
               href="/"
-              className="inline-block bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              className="inline-block bg-slate-600 text-white px-6 py-2 rounded-lg hover:bg-slate-700 transition-colors font-medium"
             >
               ← Back to Home
             </Link>
           </div>
         </div>
       </div>
-    </div>
+    </SpaceBackground>
   );
 }
