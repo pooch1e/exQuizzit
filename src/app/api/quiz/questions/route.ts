@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
+import { shuffleArray } from '../../../lib/utils/shuffleArray.ts';
 import { countries } from '../../../../data/development-data/countries-data.js';
+
 // change to supabase
 
 interface Country {
@@ -30,10 +32,7 @@ interface Question {
   type: 'flag' | 'trivia';
 }
 //TODO extract out utils
-// Utility functions
-function shuffleArray<T>(array: T[]): T[] {
-  return [...array].sort(() => Math.random() - 0.5);
-}
+
 
 function decodeHTML(html: string): string {
   return html
