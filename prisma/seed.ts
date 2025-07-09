@@ -1,6 +1,7 @@
 // prisma/seed.ts
 import { prisma } from "../src/app/lib/prisma.ts"; 
 import { countries } from "../src/data/development-data/countries-data.js";
+import { users, games } from "../src/data/test-data/index.js";
 
 async function main() {
   console.log('Starting database seeding');
@@ -21,18 +22,18 @@ async function main() {
     console.log(`Seeded ${createdCountries.count} countries`);
     
     // Seed users
-    // const createdUsers = await prisma.user.createMany({
-    //   data: users,
-    //   skipDuplicates: true
-    // });
-    // console.log(`Seeded ${createdUsers.count} users`);
+    const createdUsers = await prisma.user.createMany({
+      data: users,
+      skipDuplicates: true
+    });
+    console.log(`Seeded ${createdUsers.count} users`);
     
-    // Seed game attempts
-    // const createdGames = await prisma.game.createMany({
-    //   data: games,
-    //   skipDuplicates: true
-    // });
-    // console.log(`Seeded ${createdGames.count} games`);
+    //Seed game attempts
+    const createdGames = await prisma.game.createMany({
+      data: games,
+      skipDuplicates: true
+    });
+    console.log(`Seeded ${createdGames.count} games`);
     
     
   } catch (error) {
