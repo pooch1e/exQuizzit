@@ -27,12 +27,17 @@ describe('testing decode HTML util', () => {
     expect(decodeHTML('Hello &quot;world&quot;')).toBe('Hello "world"');
   });
   test('returns single quote when passed /&#039;/g', () => {
-    expect(decodeHTML('this is my &#039;test&#039;')).toBe("this is my 'test'")
+    expect(decodeHTML('this is my &#039;test&#039;')).toBe("this is my 'test'");
   });
   test('returns ampersand when passed &amp;', () => {
-    expect(decodeHTML('I love coding &amp; my friends')).toBe('I love coding & my friends')
-  })
+    expect(decodeHTML('I love coding &amp; my friends')).toBe(
+      'I love coding & my friends'
+    );
+  });
   test('returns < when passed &lt;', () => {
-    expect(decodeHTML('this is &lt; than this')).toBe('this is < than this')
-  })
+    expect(decodeHTML('this is &lt; than this')).toBe('this is < than this');
+  });
+  test('returns > when passed &gt;', () => {
+    expect(decodeHTML('2 is &gt; than 4')).toBe('2 is > than 4');
+  });
 });
