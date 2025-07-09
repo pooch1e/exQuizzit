@@ -10,7 +10,7 @@ export const seedTestDatabase = async (prismaClient? : PrismaClient) => {
     },
   });
 
-  console.log('Starting test database seeding');
+
 
   try {
     //reset
@@ -22,21 +22,21 @@ export const seedTestDatabase = async (prismaClient? : PrismaClient) => {
       data: countries,
       skipDuplicates: true
     });
-    console.log(`Seeded ${createdCountries.count} countries`);
+
 
     // Seed users
     const createdUsers = await prisma.user.createMany({
       data: users,
       skipDuplicates: true
     });
-    console.log(`Seeded ${createdUsers.count} users`);
+
 
     // Seed games last (likely references users and/or countries)
     const createdGames = await prisma.game.createMany({
       data: games,
       skipDuplicates: true
     });
-    console.log(`Seeded ${createdGames.count} games`);
+
   } catch (err) {
     console.log('error in seeding test db')
     throw err;
