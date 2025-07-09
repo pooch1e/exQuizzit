@@ -1,4 +1,13 @@
 import { prisma } from '../prisma';
+
+interface Country {
+  userId: number;
+  name: string;
+  flagUrl: string;
+  capital: string;
+  currency: string;
+  population: number;
+}
 export class CountryService {
   async getCountries(): Promise<Country[]> {
     //fetch from supabase
@@ -15,13 +24,12 @@ export class CountryService {
       });
       return countries;
     } catch (err) {
-      console.log('err fetching from supabase');
+      console.log(err, 'err fetching from supabase');
 
       return this.getFallbackCountries();
     }
   }
   private getFallbackCountries(): Country[] {
-    
-    return countries.slice(0, 30); 
+    return countries.slice(0, 30);
   }
 }

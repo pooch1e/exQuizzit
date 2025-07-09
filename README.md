@@ -84,5 +84,5 @@ To test database, will have to add to test-seed file any new models and reinterg
 * Responsiblities
   - TriviaService: Handles external API calls, timeouts, error handling
   - CountryService: Manages data access (database/fallback data)
-  - QuizService: Contains pure business logic for question generation
+  - QuizService: Contains logic for question generation
   - API Handler: Orchestrates services and handles HTTP concerns
