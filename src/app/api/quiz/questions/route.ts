@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const baseUrl = `${url.protocol}//${url.host}`;
 
-    // Fetch data in parallel
+    
     const [triviaQuestions, countries] = await Promise.all([
       triviaService.fetchQuestions(baseUrl),
       countryService.getCountries(),
@@ -23,10 +23,10 @@ export async function GET(request: Request) {
     // Generate questions
     const flagQuestions = quizService.generateFlagQuestions(countries);
     const triviaQuestionsMapped = quizService.generateTriviaQuestions(
-      triviaQuestions.slice(0, 20) // Limit for performance
+      triviaQuestions.slice(0, 20) 
     );
 
-    // Combine and shuffle
+    
     const allQuestions = [...flagQuestions, ...triviaQuestionsMapped];
     const shuffledQuestions = quizService.combineAndShuffle(allQuestions);
 
