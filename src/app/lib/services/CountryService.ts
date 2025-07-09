@@ -1,4 +1,5 @@
 import { prisma } from '../prisma';
+import { countries } from '../../../data/development-data/countries-data.js';
 
 interface Country {
   userId: number;
@@ -12,7 +13,7 @@ export class CountryService {
   async getCountries(): Promise<Country[]> {
     //fetch from supabase
     try {
-      const countries = await prisma.countries.findMany({
+      const countriesFromDb = await prisma.countries.findMany({
         select: {
           userId: true,
           name: true,
@@ -22,7 +23,7 @@ export class CountryService {
           population: true,
         },
       });
-      return countries;
+      return countriesFromDb;
     } catch (err) {
       console.log(err, 'err fetching from supabase');
 
