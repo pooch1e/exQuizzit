@@ -1,8 +1,8 @@
 // app/api/quiz/route.ts
 import { NextResponse } from 'next/server';
-import { TriviaService } from '../../../lib/services/triviaService';
-import { CountryService } from '../../../lib/services/CountryService';
-import { QuestionService } from '../../../lib/services/QuestionService';
+import { TriviaService } from '../../../lib/services/TriviaService.ts';
+import { CountryService } from '../../../lib/services/CountryService.ts';
+import { QuestionService } from '../../../lib/services/QuestionService.ts';
 export async function GET(request: Request) {
   try {
     // Initialize services
@@ -14,7 +14,6 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const baseUrl = `${url.protocol}//${url.host}`;
 
-    
     const [triviaQuestions, countries] = await Promise.all([
       triviaService.fetchQuestions(baseUrl),
       countryService.getCountries(),
@@ -23,10 +22,9 @@ export async function GET(request: Request) {
     // Generate questions
     const flagQuestions = quizService.generateFlagQuestions(countries);
     const triviaQuestionsMapped = quizService.generateTriviaQuestions(
-      triviaQuestions.slice(0, 20) 
+      triviaQuestions.slice(0, 20)
     );
 
-    
     const allQuestions = [...flagQuestions, ...triviaQuestionsMapped];
     const shuffledQuestions = quizService.combineAndShuffle(allQuestions);
 
