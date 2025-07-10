@@ -1,6 +1,35 @@
 import { shuffleArray } from '../utils/shuffleArray.ts';
 import { decodeHTML } from '../utils/decodeHTML.ts';
 
+interface Country {
+  userId: number;
+  name: string;
+  flagUrl: string;
+  capital: string;
+  currency: string;
+  population: number;
+}
+
+interface Question {
+  id: number;
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  type: 'flag' | 'trivia';
+  countryData?: {
+    name: string;
+    capital: string;
+    currency: string;
+    population: number;
+  };
+}
+
+interface TriviaQuestion {
+  question: string;
+  correct_answer: string;
+  incorrect_answers: string[];
+}
+
 export class QuestionService {
   generateFlagQuestions(countries: Country[]): Question[] {
     return countries.map((country, index) => {
@@ -11,6 +40,13 @@ export class QuestionService {
         options: flagOptions.map((c) => c.flagUrl), // Flag URLs as options
         correctAnswer: country.flagUrl,
         type: 'flag',
+        // Include country data for "Did You Know" facts
+        countryData: {
+          name: country.name,
+          capital: country.capital,
+          currency: country.currency,
+          population: country.population,
+        },
       };
     });
   }
@@ -28,8 +64,39 @@ export class QuestionService {
     }));
   }
 
-  combineAndShuffle(questions: Question[]): Question[] {
-    return shuffleArray(questions);
+  combineAndShuffle(flagQuestions: Question[], triviaQuestions: Question[]): Question[] {
+    const combinedQuestions: Question[] = [];
+    
+    // Shuffle both arrays first
+    const shuffledFlags = shuffleArray([...flagQuestions]);
+    const shuffledTrivia = shuffleArray([...triviaQuestions]);
+    
+    let flagIndex = 0;
+    let triviaIndex = 0;
+    let questionCount = 0;
+    
+    // Create pattern: flag, flag, trivia, flag, flag, trivia, etc.
+    while (flagIndex < shuffledFlags.length || triviaIndex < shuffledTrivia.length) {
+      questionCount++;
+      
+      // Every 3rd question should be trivia (if available)
+      if (questionCount % 3 === 0 && triviaIndex < shuffledTrivia.length) {
+        combinedQuestions.push(shuffledTrivia[triviaIndex]);
+        triviaIndex++;
+      } 
+      // Otherwise use flag questions (if available)
+      else if (flagIndex < shuffledFlags.length) {
+        combinedQuestions.push(shuffledFlags[flagIndex]);
+        flagIndex++;
+      }
+      // If no more flag questions, use remaining trivia
+      else if (triviaIndex < shuffledTrivia.length) {
+        combinedQuestions.push(shuffledTrivia[triviaIndex]);
+        triviaIndex++;
+      }
+    }
+    
+    return combinedQuestions;
   }
 
   private generateFlagOptions(

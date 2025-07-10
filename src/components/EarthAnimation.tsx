@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 // Flag emojis and their country names
 const flags = [
-  { emoji: '🇺🇸', name: 'USA' },
-  { emoji: '🇬🇧', name: 'UK' },
-  { emoji: '🇫🇷', name: 'France' },
-  { emoji: '🇩🇪', name: 'Germany' },
-  { emoji: '🇯🇵', name: 'Japan' },
-  { emoji: '🇨🇦', name: 'Canada' },
-  { emoji: '🇦🇺', name: 'Australia' },
-  { emoji: '🇧🇷', name: 'Brazil' },
-  { emoji: '🇮🇳', name: 'India' },
-  { emoji: '🇨🇳', name: 'China' },
-  { emoji: '🇪🇸', name: 'Spain' },
-  { emoji: '🇮🇹', name: 'Italy' }
+  { emoji: "🇺🇸", name: "USA" },
+  { emoji: "🇬🇧", name: "UK" },
+  { emoji: "🇫🇷", name: "France" },
+  { emoji: "🇩🇪", name: "Germany" },
+  { emoji: "🇯🇵", name: "Japan" },
+  { emoji: "🇨🇦", name: "Canada" },
+  { emoji: "🇦🇺", name: "Australia" },
+  { emoji: "🇧🇷", name: "Brazil" },
+  { emoji: "🇮🇳", name: "India" },
+  { emoji: "🇨🇳", name: "China" },
+  { emoji: "🇪🇸", name: "Spain" },
+  { emoji: "🇮🇹", name: "Italy" },
 ];
 
 const EarthAnimation = () => {
@@ -25,7 +25,7 @@ const EarthAnimation = () => {
   // Animate all flags together in a synchronized circle
   useEffect(() => {
     const interval = setInterval(() => {
-      setRotationAngle(prev => (prev + 1) % 360);
+      setRotationAngle((prev) => (prev + 1) % 360);
     }, 50);
 
     return () => clearInterval(interval);
@@ -56,7 +56,7 @@ const EarthAnimation = () => {
           const radius = 120; // Distance from center
           const x = Math.cos(radian) * radius;
           const y = Math.sin(radian) * radius;
-          
+
           return (
             <div
               key={index}
@@ -64,23 +64,25 @@ const EarthAnimation = () => {
               style={{
                 left: `calc(50% + ${x}px)`,
                 top: `calc(50% + ${y}px)`,
-                transform: 'translate(-50%, -50%)',
+                transform: "translate(-50%, -50%)",
               }}
               title={flag.name}
             >
               {/* Clean flag without bubble background */}
-              <span className="drop-shadow-lg filter">
-                {flag.emoji}
-              </span>
+              <span className="drop-shadow-lg filter">{flag.emoji}</span>
             </div>
           );
         })}
 
         {/* Orbital rings for visual effect */}
-        <div className="absolute inset-0 border border-blue-200/30 rounded-full animate-pulse" 
-             style={{ margin: '24px' }} />
-        <div className="absolute inset-0 border border-green-200/20 rounded-full animate-pulse" 
-             style={{ margin: '8px', animationDelay: '1s' }} />
+        <div
+          className="absolute inset-0 border border-blue-200/30 rounded-full animate-pulse"
+          style={{ margin: "24px" }}
+        />
+        <div
+          className="absolute inset-0 border border-green-200/20 rounded-full animate-pulse"
+          style={{ margin: "8px", animationDelay: "1s" }}
+        />
       </div>
     </div>
   );

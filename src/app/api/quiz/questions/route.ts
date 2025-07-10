@@ -27,9 +27,8 @@ export async function GET(request: Request) {
       triviaQuestions.slice(0, 20) // Limit for performance
     );
 
-    // Combine and shuffle
-    const allQuestions = [...flagQuestions, ...triviaQuestionsMapped];
-    const shuffledQuestions = quizService.combineAndShuffle(allQuestions);
+    // Combine with specific pattern: every 3rd question is trivia
+    const shuffledQuestions = quizService.combineAndShuffle(flagQuestions, triviaQuestionsMapped);
 
     return NextResponse.json({
       success: true,

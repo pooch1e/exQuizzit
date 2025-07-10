@@ -21,6 +21,12 @@ interface Question {
   country?: Country;
   flagOptions?: Country[];
   type: 'flag' | 'trivia';
+  countryData?: {
+    name: string;
+    capital: string;
+    currency: string;
+    population: number;
+  };
 }
 
 interface QuizClientProps {
@@ -36,7 +42,8 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const [showResult, setShowResult] = useState(false);
   const [quizComplete, setQuizComplete] = useState(false);
   const [showGameOverModal, setShowGameOverModal] = useState(false);
-  const [showCorrectModal, setShowCorrectModal] = useState(false);
+  const [showDidYouKnow, setShowDidYouKnow] = useState(false);
+  const [showWrongAnswer, setShowWrongAnswer] = useState(false);
   const [isLoadingNewQuiz, setIsLoadingNewQuiz] = useState(false);
 
   //TODO fix timer
@@ -90,14 +97,16 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   };
 
   const handleWrongAnswer = () => {
-    setShowGameOverModal(true);
+    setShowWrongAnswer(true);
   };
 
   const handleTryAgain = async () => {
     setShowGameOverModal(false);
+    setShowWrongAnswer(false);
     setSelectedAnswer('');
     setCurrentQuestion(0);
     setScore(0);
+    setShowDidYouKnow(false);
 
     await loadNewQuestions();
   };
@@ -106,7 +115,9 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     router.push('/home');
   };
 
-  const getDidYouKnowFact = (country: Country) => {
+  const getDidYouKnowFact = (country: Country | { name: string; capital: string; currency: string; population: number }) => {
+    console.log('Country data:', country); // Debug log
+    
     const facts = [
       {
         type: 'capital',
@@ -124,16 +135,29 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
       },
     ];
 
-    return facts[Math.floor(Math.random() * facts.length)];
+    const selectedFact = facts[Math.floor(Math.random() * facts.length)];
+    console.log('Selected fact:', selectedFact); // Debug log
+    return selectedFact;
   };
 
   const handleCorrectAnswer = () => {
     setScore(score + 1);
-    setShowCorrectModal(true);
+    setShowDidYouKnow(true);
   };
 
   const handleNextFromCorrect = () => {
-    setShowCorrectModal(false);
+    setShowDidYouKnow(false);
+    setSelectedAnswer('');
+
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setQuizComplete(true);
+    }
+  };
+
+  const handleNextFromWrong = () => {
+    setShowWrongAnswer(false);
     setSelectedAnswer('');
 
     if (currentQuestion + 1 < questions.length) {
@@ -149,6 +173,8 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setSelectedAnswer('');
     setShowResult(false);
     setQuizComplete(false);
+    setShowDidYouKnow(false);
+    setShowWrongAnswer(false);
 
     await loadNewQuestions();
   };
@@ -209,8 +235,13 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   return (
     <SpaceBackground className="p-2 sm:p-4">
       <div className="max-w-lg mx-auto pt-2 sm:pt-4">
-        {/* Score Display */}
-        <div className="mb-4 flex justify-center items-center">
+        {/* Score and Bucks Display */}
+        <div className="mb-4 flex justify-between items-center px-4">
+          <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2 sm:py-3 border border-white/20">
+            <span className="text-base sm:text-lg font-medium text-white">
+              🪙 QuizzBucks: <span className="text-yellow-300 font-bold">0</span>
+            </span>
+          </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2 sm:py-3 border border-white/20">
             <span className="text-base sm:text-lg font-medium text-white">
               Score: <span className="text-blue-300 font-bold">{score}</span>
@@ -220,19 +251,118 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
 
         {/* Question Card - Square Shape */}
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl thick-yellow-border p-4 sm:p-6 mb-4 sm:mb-6 aspect-square flex flex-col justify-center mx-auto max-w-sm">
-          <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 text-center leading-tight mb-2 sm:mb-4">
-            {question.question}
-          </h2>
+          {!showDidYouKnow && !showWrongAnswer ? (
+            <>
+              <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 text-center leading-tight mb-2 sm:mb-4">
+                {question.question}
+              </h2>
+            </>
+          ) : showDidYouKnow ? (
+            /* Did You Know Section */
+            <div className="text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-green-600 mb-4">
+                ✅ Correct!
+              </h2>
+              
+              {question.type === 'flag' && (question.country || question.countryData) && (
+                <div className="mb-4">
+                  <img 
+                    src={question.country?.flagUrl || question.correctAnswer} 
+                    alt={`Flag of ${question.country?.name || question.countryData?.name}`}
+                    className="w-20 h-12 sm:w-24 sm:h-16 mx-auto rounded-md shadow-md object-cover mb-2"
+                  />
+                  <p className="text-lg sm:text-xl font-bold text-gray-800">
+                    {question.country?.name || question.countryData?.name}
+                  </p>
+                </div>
+              )}
 
-          {/* Flag Display for Flag Questions */}
-          {question.type === 'flag' && question.country && (
-            <div className="flex items-center justify-center">
-              <div className="w-32 h-20 sm:w-40 sm:h-24 md:w-48 md:h-28 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-gray-200 shadow-md">
-                <img
-                  src={question.country.flagUrl}
-                  alt={`Flag of ${question.country.name}`}
-                  className="max-w-full max-h-full object-contain rounded"
-                />
+              {question.type === 'trivia' && (
+                <div className="mb-4">
+                  <p className="text-lg sm:text-xl font-bold text-gray-800">
+                    {question.correctAnswer}
+                  </p>
+                </div>
+              )}
+
+              {/* Did You Know section - show for flag questions */}
+              {question.type === 'flag' && (question.country || question.countryData) && (
+                <div className="bg-blue-50 rounded-lg p-3 mb-4">
+                  <h3 className="text-base font-semibold text-blue-800 mb-2">
+                    💡 Did You Know?
+                  </h3>
+                  <p className="text-sm text-blue-700">
+                    {(() => {
+                      const countryInfo = question.country || question.countryData!;
+                      console.log('Rendering fact for country:', countryInfo);
+                      const fact = getDidYouKnowFact(countryInfo);
+                      console.log('Fact to render:', fact.text);
+                      return fact.text;
+                    })()}
+                  </p>
+                </div>
+              )}
+
+              <button
+                onClick={handleNextFromCorrect}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+              >
+                {currentQuestion + 1 >= questions.length ? 'Finish Quiz 🎉' : 'Next Question ➡️'}
+              </button>
+            </div>
+          ) : (
+            /* Wrong Answer Section */
+            <div className="text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-red-600 mb-4">
+                ❌ Wrong Answer!
+              </h2>
+              
+              {/* Show correct flag for flag questions */}
+              {question.type === 'flag' && (question.country || question.countryData) && (
+                <div className="mb-4">
+                  <p className="text-base sm:text-lg text-gray-600 mb-4">
+                    The correct answer was:
+                  </p>
+                  <img 
+                    src={question.country?.flagUrl || question.correctAnswer} 
+                    alt={`Flag of ${question.country?.name || question.countryData?.name}`}
+                    className="w-20 h-12 sm:w-24 sm:h-16 mx-auto rounded-md shadow-md object-cover mb-2"
+                  />
+                  <p className="text-lg sm:text-xl font-bold text-gray-800">
+                    {question.country?.name || question.countryData?.name}
+                  </p>
+                </div>
+              )}
+
+              {/* Show correct answer for trivia questions */}
+              {question.type === 'trivia' && (
+                <div className="mb-4">
+                  <p className="text-base sm:text-lg text-gray-600 mb-2">
+                    The correct answer was:
+                  </p>
+                  <p className="text-lg sm:text-xl font-bold text-gray-800">
+                    {question.correctAnswer}
+                  </p>
+                </div>
+              )}
+
+              <p className="text-gray-600 mb-4">
+                Final Score: <span className="font-semibold">{score}</span>
+              </p>
+
+              <div className="space-y-2">
+                <button
+                  onClick={handleTryAgain}
+                  className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-semibold text-sm"
+                >
+                  Try Again 🔄
+                </button>
+                <button
+                  onClick={handleGoHome}
+                  className="w-full bg-slate-600 text-white py-2 px-4 rounded-lg hover:bg-slate-700 transition-colors font-semibold text-sm"
+                >
+                  Back to Home 🏠
+                </button>
               </div>
             </div>
           )}
@@ -243,37 +373,38 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
           {question.options.map((option, index) => (
             <button
               key={index}
-              onClick={() => handleAnswerSelect(option)}
-              disabled={showResult}
-              className={`p-2 sm:p-3 md:p-4 rounded-xl border-2 text-center font-medium transition-all duration-200 hover:shadow-lg min-h-[60px] sm:min-h-[70px] md:min-h-[80px] flex items-center justify-center ${
-                showResult
-                  ? option === question.correctAnswer
-                    ? 'bg-green-100 border-green-500 shadow-green-200'
-                    : option === selectedAnswer
-                    ? 'bg-red-100 border-red-500 shadow-red-200'
-                    : 'bg-gray-100 border-gray-300'
-                  : selectedAnswer === option
-                  ? 'bg-purple-100 border-purple-500 shadow-purple-200'
-                  : 'bg-gray-50 border-gray-300 hover:bg-purple-50 hover:border-purple-300 active:bg-purple-100'
-              }`}>
-              {question.type === 'flag' ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <img
-                    src={option}
-                    alt={`Flag option ${index + 1}`}
-                    className="max-w-full max-h-full object-contain rounded"
-                  />
-                </div>
-              ) : (
-                <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-800 leading-tight text-center break-words">
-                  {option}
-                </div>
-              )}
-            </button>
-          ))}
+              onClick={() => !showDidYouKnow && !showWrongAnswer && handleAnswerSelect(option)}
+              disabled={showDidYouKnow || showWrongAnswer}
+              className={`p-2 sm:p-3 md:p-4 rounded-xl text-center font-medium transition-all duration-200 min-h-[60px] sm:min-h-[70px] md:min-h-[80px] flex items-center justify-center ${
+                showDidYouKnow || showWrongAnswer
+                ? option === question.correctAnswer
+                  ? 'bg-green-100 border-4 border-green-600 shadow-green-200'
+                  : option === selectedAnswer
+                  ? 'bg-red-100 border-2 border-red-500 shadow-red-200'
+                  : 'bg-gray-100 border-2 border-gray-300'
+                : selectedAnswer === option
+                ? 'bg-purple-100 border-2 border-purple-500 shadow-purple-200'
+                : 'bg-gray-50 border-2 border-gray-300 hover:bg-purple-50 hover:border-purple-300 active:bg-purple-100 hover:shadow-lg'
+            }`}>
+            {question.type === 'flag' ? (
+              <div className="w-full h-full flex items-center justify-center p-1">
+                <img
+                  src={option}
+                  alt={`Flag option ${index + 1}`}
+                  className="w-full h-full object-cover rounded"
+                  style={{ aspectRatio: '3/2' }}
+                />
+              </div>
+            ) : (
+              <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-800 leading-tight text-center break-words">
+                {option}
+              </div>
+            )}
+          </button>
+        ))}
         </div>
 
-        {showResult && (
+        {showResult && !showDidYouKnow && (
           <div className="mt-6 text-center">
             <p
               className={`text-lg font-semibold ${
@@ -353,67 +484,6 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                 Back to Home 🏠
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Correct Answer Modal */}
-      {showCorrectModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 sm:p-8 max-w-sm w-full text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-green-600 mb-6">
-              ✅ Correct!
-            </h2>
-
-            {questions[currentQuestion]?.type === 'flag' &&
-              questions[currentQuestion]?.country && (
-                <div className="mb-6">
-                  <img
-                    src={questions[currentQuestion].country!.flagUrl}
-                    alt={`Flag of ${questions[currentQuestion].country!.name}`}
-                    className="w-20 h-12 sm:w-24 sm:h-16 mx-auto rounded-md shadow-md object-cover mb-4"
-                  />
-                  <p className="text-lg sm:text-xl font-bold text-gray-800">
-                    {questions[currentQuestion].country!.name}
-                  </p>
-                </div>
-              )}
-
-            {questions[currentQuestion]?.type === 'trivia' && (
-              <div className="mb-6">
-                <p className="text-lg sm:text-xl font-bold text-gray-800">
-                  {questions[currentQuestion].correctAnswer}
-                </p>
-              </div>
-            )}
-
-            {questions[currentQuestion]?.type === 'flag' &&
-              questions[currentQuestion]?.country && (
-                <div className="bg-blue-50 rounded-lg p-4 mb-6">
-                  <h3 className="text-base sm:text-lg font-semibold text-blue-800 mb-2">
-                    💡 Did You Know?
-                  </h3>
-                  <p className="text-sm sm:text-base text-blue-700">
-                    {
-                      getDidYouKnowFact(questions[currentQuestion].country!)
-                        .text
-                    }
-                  </p>
-                </div>
-              )}
-
-            <p className="text-gray-600 mb-6">
-              Score:{' '}
-              <span className="font-semibold text-green-600">{score}</span>
-            </p>
-
-            <button
-              onClick={handleNextFromCorrect}
-              className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-semibold">
-              {currentQuestion + 1 >= questions.length
-                ? 'Finish Quiz 🎉'
-                : 'Next Question ➡️'}
-            </button>
           </div>
         </div>
       )}
