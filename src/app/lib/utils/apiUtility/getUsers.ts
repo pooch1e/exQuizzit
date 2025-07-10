@@ -1,4 +1,4 @@
-import { prisma } from '../../prisma';
+import { prisma } from '../../prisma.ts';
 export const getUsers = async (user: string) => {
   try {
     const singleUser = await prisma.user.findFirst({
@@ -6,10 +6,12 @@ export const getUsers = async (user: string) => {
         userName: user,
       },
     });
+    // console.log(singleUser);
     return singleUser;
-    
   } catch (err) {
     console.log(err);
     throw err;
   }
 };
+
+
