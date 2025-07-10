@@ -49,6 +49,10 @@ export default function SeedUserPage() {
     }
   }
 
+  function handleGuestClick() {
+    router.push("/home");
+  }
+
   return (
     <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700">
       <form
@@ -73,7 +77,9 @@ export default function SeedUserPage() {
         </div>
 
         {/* Username */}
-        <label className="block mb-2 font-semibold text-gray-700">Username</label>
+        <label className="block mb-2 font-semibold text-gray-700">
+          Username
+        </label>
         <div className="flex items-center border-2 border-blue-400 rounded mb-4 px-3 py-2">
           <span className="text-xl text-gray-600 mr-2">🎮</span>
           <input
@@ -99,12 +105,21 @@ export default function SeedUserPage() {
           </p>
         )}
 
-        <button
-          type="submit"
-          className="w-full bg-yellow-400 text-blue-900 font-bold py-2 rounded hover:bg-yellow-300 transition duration-200 shadow-md"
-        >
-          🚀 Seed User
-        </button>
+        <div className="mt-6 space-y-4">
+          <button
+            type="submit"
+            className="w-full bg-yellow-400 text-blue-900 font-bold py-2 rounded hover:bg-yellow-300 transition duration-200 shadow-md"
+          >
+            🚀 Seed User
+          </button>
+
+          <button
+            onClick={handleGuestClick}
+            className="w-full bg-yellow-400 text-blue-900 font-bold py-2 rounded hover:bg-yellow-300 transition duration-200 shadow-md"
+          >
+            🎮 Continue as Guest
+          </button>
+        </div>
       </form>
     </main>
   );
