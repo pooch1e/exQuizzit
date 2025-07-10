@@ -193,7 +193,7 @@ export default function LeaderboardPage() {
           </Link>
           <div>
             <Link
-              href="/"
+              href="/home"
               className="inline-block bg-slate-600 text-white px-6 py-2 rounded-lg hover:bg-slate-700 transition-colors font-medium"
             >
               ← Back to Home

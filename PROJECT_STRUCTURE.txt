@@ -1,0 +1,166 @@
+EXQUIZZIT - PROJECT STRUCTURE DOCUMENTATION
+==========================================
+
+This document explains the purpose of each folder and file in the exQuizzit quiz application.
+
+ROOT DIRECTORY
+==============
+├── .env                    - Environment variables (database URLs, API keys)
+├── .gitignore             - Git ignore patterns
+├── README.md              - Project documentation and setup instructions
+├── SETUP.md               - Additional setup instructions
+├── package.json           - Node.js dependencies and scripts
+├── next.config.ts         - Next.js configuration
+├── next-env.d.ts          - Next.js TypeScript declarations
+├── tsconfig.json          - TypeScript compiler configuration
+├── postcss.config.mjs     - PostCSS configuration for Tailwind CSS
+├── eslint.config.mjs      - ESLint configuration for code linting
+├── jest.config.js         - Jest testing framework configuration
+├── jest.setup.ts          - Jest test setup file
+├── clearDb.ts             - Database cleanup utility
+└── seed.ts                - Database seeding script
+
+SRC DIRECTORY STRUCTURE
+=======================
+
+src/
+├── app/                   - Next.js 13+ App Router directory
+│   ├── globals.css        - Global CSS styles including Tailwind
+│   ├── layout.tsx         - Root layout component (wraps all pages)
+│   ├── page.tsx           - Homepage component
+│   │
+│   ├── api/               - API routes (server-side endpoints)
+│   │   ├── countries/
+│   │   │   └── route.ts   - REST API for countries data
+│   │   ├── games/
+│   │   │   └── route.ts   - REST API for game records
+│   │   ├── quiz/
+│   │   │   └── questions/
+│   │   │       └── route.ts - Main quiz questions API endpoint
+│   │   ├── trivia/
+│   │   │   └── route.ts   - External trivia API integration
+│   │   └── users/
+│   │       └── route.ts   - User management API
+│   │
+│   ├── leaderboard/
+│   │   └── page.tsx       - Leaderboard page component
+│   │
+│   ├── quiz/
+│   │   └── page.tsx       - Quiz game page component
+│   │
+│   ├── test-api/
+│   │   └── page.tsx       - API testing page for development
+│   │
+│   └── lib/               - Shared utilities and services
+│       ├── connections.ts - Database connection helpers
+│       ├── prisma.ts      - Prisma client configuration and utilities
+│       ├── supabaseClient.ts - Supabase client configuration
+│       │
+│       ├── services/      - Business logic services
+│       │   ├── CountryService.ts    - Handles country data operations
+│       │   ├── QuestionService.ts   - Quiz question generation logic
+│       │   └── triviaService.ts     - External trivia API service
+│       │
+│       └── utils/         - Utility functions
+│           ├── decodeHTML.ts        - HTML entity decoding
+│           └── shuffleArray.ts      - Array randomization utility
+│
+├── components/            - Reusable React components
+│   ├── QuizClient.tsx     - Main quiz game component with all logic
+│   ├── QuizClient-backup.tsx - Backup of quiz component
+│   └── SpaceBackground.tsx - Reusable space-themed background component
+│
+└── data/                  - Static data files
+    ├── development-data/
+    │   └── countries-data.js - Fallback countries data (195+ countries)
+    └── test-data/         - Test data for development/testing
+        ├── countries-test.js - Test countries data
+        ├── game-test.js     - Test game data
+        ├── users-test.js    - Test user data
+        └── index.js         - Test data exports
+
+PRISMA DIRECTORY
+================
+prisma/
+├── schema.prisma          - Database schema definition (Users, Countries, Games)
+├── seed.ts               - Production database seeding
+├── seed-test-db.ts       - Test database seeding
+├── seedCountries.ts      - Countries data seeding script
+└── migrations/           - Database migration files
+    ├── migration_lock.toml
+    └── 20250707103742_init/
+        └── migration.sql  - Initial database schema migration
+
+GENERATED DIRECTORY
+==================
+generated/
+└── prisma/               - Generated Prisma client files
+    ├── client.js         - Main Prisma client
+    ├── client.d.ts       - TypeScript definitions
+    ├── index.js          - Client exports
+    └── runtime/          - Prisma runtime files
+
+TESTS DIRECTORY
+===============
+__tests__/
+├── db.test.ts            - Database operation tests
+└── utils.test.ts         - Utility function tests
+
+KEY FEATURES & ARCHITECTURE
+===========================
+
+1. FRONTEND (Next.js 13+ App Router)
+   - React Server Components and Client Components
+   - Tailwind CSS for styling with space theme
+   - Mobile-responsive design
+   - TypeScript for type safety
+
+2. BACKEND (API Routes)
+   - RESTful API endpoints
+   - Prisma ORM for database operations
+   - Supabase PostgreSQL database
+   - Service layer architecture
+
+3. DATABASE (Supabase + Prisma)
+   - Users table (user profiles, scores)
+   - Countries table (flag quiz data)
+   - Games table (game history)
+
+4. QUIZ LOGIC
+   - Flag identification questions (from database)
+   - Trivia questions (from external API)
+   - Question shuffling and randomization
+   - Fallback data system for reliability
+
+5. TESTING
+   - Jest testing framework
+   - Database testing utilities
+   - Unit tests for utilities
+
+6. DEPLOYMENT & DEVELOPMENT
+   - Environment-based configuration
+   - Database seeding scripts
+   - Development API testing pages
+   - ESLint code quality
+
+MAIN USER FLOW
+==============
+1. User visits homepage (page.tsx)
+2. Navigates to quiz (/quiz/page.tsx)
+3. QuizClient component loads questions from API
+4. API fetches countries from Supabase + trivia from external API
+5. User plays quiz with shuffled questions
+6. Scores are saved to database
+7. User can view leaderboard
+
+DEVELOPMENT WORKFLOW
+===================
+- npm run dev: Start development server
+- npm run build: Build for production
+- npm test: Run tests
+- npx prisma db push: Update database schema
+- npx prisma generate: Generate Prisma client
+- npm run seed: Seed database with data
+
+This architecture provides a scalable, maintainable quiz application with
+robust error handling, fallback systems, and a clean separation of concerns.

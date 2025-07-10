@@ -22,6 +22,7 @@
     "@prisma/client": "^6.11.1",
     "@supabase/supabase-js": "^2.50.3",
     "dotenv": "^17.0.1",
+    "lottie-web": "^5.13.0",
     "next": "15.3.4",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",

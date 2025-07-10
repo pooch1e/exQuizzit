@@ -219,7 +219,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
         </div>
 
         {/* Question Card - Square Shape */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-4 sm:p-6 mb-4 sm:mb-6 aspect-square flex flex-col justify-center mx-auto max-w-sm">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl thick-yellow-border p-4 sm:p-6 mb-4 sm:mb-6 aspect-square flex flex-col justify-center mx-auto max-w-sm">
           <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 text-center leading-tight mb-2 sm:mb-4">
             {question.question}
           </h2>
