@@ -1,9 +1,12 @@
 'use client';
+
+import {ProfileHeader} from './ProfileHeader'
+  
 export const ProfileSection = ({ user }) => {
   console.log('inside profile section');
   return (
     <>
-      <h3>ProfileHeader - inside this will be avatar </h3>
+      <ProfileHeader user={user} />
       <h4>ProfileDetails inside this will be data </h4>
       <h5>Button </h5>
     </>
