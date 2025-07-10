@@ -1,8 +1,8 @@
 // app/api/quiz/route.ts
-import { NextResponse } from 'next/server';
-import { TriviaService } from '../../../lib/services/triviaService.ts';
-import { CountryService } from '../../../lib/services/CountryService.ts';
-import { QuestionService } from '../../../lib/services/QuestionService.ts';
+import { NextResponse } from "next/server";
+import { TriviaService } from "../../../lib/services/triviaService.ts";
+import { CountryService } from "../../../lib/services/CountryService.ts";
+import { QuestionService } from "../../../lib/services/QuestionService.ts";
 
 export async function GET(request: Request) {
   try {
@@ -28,7 +28,10 @@ export async function GET(request: Request) {
     );
 
     // Combine with specific pattern: every 3rd question is trivia
-    const shuffledQuestions = quizService.combineAndShuffle(flagQuestions, triviaQuestionsMapped);
+    const shuffledQuestions = quizService.combineAndShuffle(
+      flagQuestions,
+      triviaQuestionsMapped
+    );
 
     return NextResponse.json({
       success: true,
@@ -40,12 +43,12 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    console.error('Error generating quiz questions:', error);
+    console.error("Error generating quiz questions:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to generate quiz questions',
+        error: "Failed to generate quiz questions",
       },
       { status: 500 }
     );

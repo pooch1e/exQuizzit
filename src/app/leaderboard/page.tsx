@@ -123,8 +123,9 @@ export default function LeaderboardPage() {
                   <p className="text-gray-600">No players yet. Be the first to play!</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {users.slice(0, 10).map((user, index) => (
+                <div className="max-h-96 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <div className="space-y-4">
+                    {users.map((user, index) => (
                     <div
                       key={user.userId}
                       className={`flex items-center justify-between p-4 rounded-lg border ${
@@ -148,6 +149,7 @@ export default function LeaderboardPage() {
                       </div>
                     </div>
                   ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -161,8 +163,9 @@ export default function LeaderboardPage() {
                   <p className="text-gray-600">No games played yet.</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {games.slice(0, 20).map((game) => (
+                <div className="max-h-96 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <div className="space-y-3">
+                    {games.map((game) => (
                     <div
                       key={game.id}
                       className="flex items-center justify-between p-4 rounded-lg bg-gray-50 border border-gray-200"
@@ -177,6 +180,7 @@ export default function LeaderboardPage() {
                       </div>
                     </div>
                   ))}
+                  </div>
                 </div>
               )}
             </div>

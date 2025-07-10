@@ -1,5 +1,5 @@
-import { shuffleArray } from '../utils/shuffleArray.ts';
-import { decodeHTML } from '../utils/decodeHTML.ts';
+import { shuffleArray } from "../utils/shuffleArray.ts";
+import { decodeHTML } from "../utils/decodeHTML.ts";
 
 interface Country {
   userId: number;
@@ -15,7 +15,7 @@ interface Question {
   question: string;
   options: string[];
   correctAnswer: string;
-  type: 'flag' | 'trivia';
+  type: "flag" | "trivia";
   countryData?: {
     name: string;
     capital: string;
@@ -39,7 +39,7 @@ export class QuestionService {
         question: `Which flag belongs to ${country.name}?`, // Just text question
         options: flagOptions.map((c) => c.flagUrl), // Flag URLs as options
         correctAnswer: country.flagUrl,
-        type: 'flag',
+        type: "flag",
         // Include country data for "Did You Know" facts
         countryData: {
           name: country.name,
@@ -60,30 +60,36 @@ export class QuestionService {
         ...trivia.incorrect_answers.map((answer) => decodeHTML(answer)),
       ]),
       correctAnswer: decodeHTML(trivia.correct_answer),
-      type: 'trivia',
+      type: "trivia",
     }));
   }
 
-  combineAndShuffle(flagQuestions: Question[], triviaQuestions: Question[]): Question[] {
+  combineAndShuffle(
+    flagQuestions: Question[],
+    triviaQuestions: Question[]
+  ): Question[] {
     const combinedQuestions: Question[] = [];
-    
+
     // Shuffle both arrays first
     const shuffledFlags = shuffleArray([...flagQuestions]);
     const shuffledTrivia = shuffleArray([...triviaQuestions]);
-    
+
     let flagIndex = 0;
     let triviaIndex = 0;
     let questionCount = 0;
-    
+
     // Create pattern: flag, flag, trivia, flag, flag, trivia, etc.
-    while (flagIndex < shuffledFlags.length || triviaIndex < shuffledTrivia.length) {
+    while (
+      flagIndex < shuffledFlags.length ||
+      triviaIndex < shuffledTrivia.length
+    ) {
       questionCount++;
-      
+
       // Every 3rd question should be trivia (if available)
       if (questionCount % 3 === 0 && triviaIndex < shuffledTrivia.length) {
         combinedQuestions.push(shuffledTrivia[triviaIndex]);
         triviaIndex++;
-      } 
+      }
       // Otherwise use flag questions (if available)
       else if (flagIndex < shuffledFlags.length) {
         combinedQuestions.push(shuffledFlags[flagIndex]);
@@ -95,7 +101,7 @@ export class QuestionService {
         triviaIndex++;
       }
     }
-    
+
     return combinedQuestions;
   }
 
