@@ -432,7 +432,6 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }

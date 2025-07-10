@@ -9,6 +9,7 @@ ROOT DIRECTORY
 ├── .gitignore             - Git ignore patterns
 ├── README.md              - Project documentation and setup instructions
 ├── SETUP.md               - Additional setup instructions
+├── PROJECT_STRUCTURE.txt  - This file - complete project documentation
 ├── package.json           - Node.js dependencies and scripts
 ├── next.config.ts         - Next.js configuration
 ├── next-env.d.ts          - Next.js TypeScript declarations
@@ -18,16 +19,17 @@ ROOT DIRECTORY
 ├── jest.config.js         - Jest testing framework configuration
 ├── jest.setup.ts          - Jest test setup file
 ├── clearDb.ts             - Database cleanup utility
-└── seed.ts                - Database seeding script
+├── seed.ts                - Database seeding script
+└── earth-globe.json       - SVG data for the animated earth globe
 
 SRC DIRECTORY STRUCTURE
 =======================
 
 src/
 ├── app/                   - Next.js 13+ App Router directory
-│   ├── globals.css        - Global CSS styles including Tailwind
+│   ├── globals.css        - Global CSS styles including Tailwind + custom scrollbar
 │   ├── layout.tsx         - Root layout component (wraps all pages)
-│   ├── page.tsx           - Homepage component
+│   ├── page.tsx           - Login page component (no emojis, updated styling)
 │   │
 │   ├── api/               - API routes (server-side endpoints)
 │   │   ├── countries/
@@ -36,14 +38,17 @@ src/
 │   │   │   └── route.ts   - REST API for game records
 │   │   ├── quiz/
 │   │   │   └── questions/
-│   │   │       └── route.ts - Main quiz questions API endpoint
+│   │   │       └── route.ts - Main quiz questions API (every 3rd = trivia)
 │   │   ├── trivia/
 │   │   │   └── route.ts   - External trivia API integration
 │   │   └── users/
 │   │       └── route.ts   - User management API
 │   │
+│   ├── home/              - Home page (post-login)
+│   │   └── page.tsx       - Home page with animated globe and profile
+│   │
 │   ├── leaderboard/
-│   │   └── page.tsx       - Leaderboard page component
+│   │   └── page.tsx       - Leaderboard page with scrollable tables
 │   │
 │   ├── quiz/
 │   │   └── page.tsx       - Quiz game page component
@@ -58,7 +63,7 @@ src/
 │       │
 │       ├── services/      - Business logic services
 │       │   ├── CountryService.ts    - Handles country data operations
-│       │   ├── QuestionService.ts   - Quiz question generation logic
+│       │   ├── QuestionService.ts   - Quiz question generation + mixing logic
 │       │   └── triviaService.ts     - External trivia API service
 │       │
 │       └── utils/         - Utility functions
@@ -66,9 +71,10 @@ src/
 │           └── shuffleArray.ts      - Array randomization utility
 │
 ├── components/            - Reusable React components
-│   ├── QuizClient.tsx     - Main quiz game component with all logic
+│   ├── QuizClient.tsx     - Main quiz game component with timer bar & improved UX
 │   ├── QuizClient-backup.tsx - Backup of quiz component
-│   └── SpaceBackground.tsx - Reusable space-themed background component
+│   ├── SpaceBackground.tsx - Reusable space-themed background component
+│   └── EarthAnimation.tsx - CSS/JS animated globe with orbiting flags
 │
 └── data/                  - Static data files
     ├── development-data/
@@ -111,33 +117,54 @@ KEY FEATURES & ARCHITECTURE
 
 1. FRONTEND (Next.js 13+ App Router)
    - React Server Components and Client Components
-   - Tailwind CSS for styling with space theme
-   - Mobile-responsive design
+   - Tailwind CSS for styling with space theme + custom yellow borders
+   - Mobile-responsive design with modern UI/UX
    - TypeScript for type safety
+   - Animated CSS globe with orbiting flags (replaced Lottie)
+   - Visual timer bar with smooth animations
+   - QuizzBucks display with coin emoji
+   - Hover effects on buttons (scale, yellow borders, darkening)
 
 2. BACKEND (API Routes)
    - RESTful API endpoints
    - Prisma ORM for database operations
    - Supabase PostgreSQL database
    - Service layer architecture
+   - Question mixing logic (every 3rd question = trivia)
 
 3. DATABASE (Supabase + Prisma)
    - Users table (user profiles, scores)
    - Countries table (flag quiz data)
    - Games table (game history)
+   - Scrollable leaderboard tables
 
-4. QUIZ LOGIC
+4. QUIZ LOGIC & USER EXPERIENCE
    - Flag identification questions (from database)
    - Trivia questions (from external API)
-   - Question shuffling and randomization
-   - Fallback data system for reliability
+   - Every 3rd question guaranteed to be trivia
+   - "Did You Know" facts for flag questions only
+   - No modal for correct answers - inline feedback
+   - Timer bar that shrinks from full width to zero (10 seconds)
+   - Consistent answer button sizes regardless of content
+   - Yellow border hover effects and 10% darkening
+   - QuizzBucks display with coin emoji
+   - Answer buttons always visible with color-coded feedback
 
-5. TESTING
+5. VISUAL IMPROVEMENTS
+   - Cartoon earth globe animation with CSS/JS
+   - Synchronized flag orbiting (no bubbles/backgrounds)
+   - Modern yellow and space-themed color scheme
+   - Profile icon and username display
+   - 10% scale hover effects on home page buttons
+   - Thick yellow borders for interactive elements
+   - Custom scrollbars with webkit styling
+
+6. TESTING
    - Jest testing framework
    - Database testing utilities
    - Unit tests for utilities
 
-6. DEPLOYMENT & DEVELOPMENT
+7. DEPLOYMENT & DEVELOPMENT
    - Environment-based configuration
    - Database seeding scripts
    - Development API testing pages
@@ -145,13 +172,30 @@ KEY FEATURES & ARCHITECTURE
 
 MAIN USER FLOW
 ==============
-1. User visits homepage (page.tsx)
-2. Navigates to quiz (/quiz/page.tsx)
-3. QuizClient component loads questions from API
-4. API fetches countries from Supabase + trivia from external API
-5. User plays quiz with shuffled questions
-6. Scores are saved to database
-7. User can view leaderboard
+1. User visits login page (page.tsx) - clean design, no emojis
+2. User enters credentials and goes to home page (/home)
+3. Home page displays animated globe, profile info, and styled buttons
+4. User clicks "Start Quiz" to navigate to quiz (/quiz/page.tsx)
+5. QuizClient component loads mixed questions from API
+6. API fetches countries from Supabase + trivia from external API
+7. Questions are mixed with every 3rd being trivia
+8. User plays quiz with:
+   - 10-second timer bar for each question
+   - Immediate feedback (green for correct, red for wrong)
+   - "Did You Know" facts for flag questions
+   - QuizzBucks and score display
+   - Answer buttons with hover effects
+9. Scores are saved to database
+10. User can view scrollable leaderboard
+
+QUIZ UX IMPROVEMENTS
+===================
+- Timer: Visual bar that shrinks horizontally over 10 seconds
+- Correct Answer: Green highlight, "Did You Know" fact for flags, no modal
+- Wrong Answer: Red highlight for selected, green for correct, immediate feedback
+- Answer Buttons: Always visible, consistent sizing, yellow border hover
+- Navigation: Clean next/try again buttons, score persistence
+- Mobile: Responsive design with proper touch targets
 
 DEVELOPMENT WORKFLOW
 ===================
@@ -163,4 +207,6 @@ DEVELOPMENT WORKFLOW
 - npm run seed: Seed database with data
 
 This architecture provides a scalable, maintainable quiz application with
-robust error handling, fallback systems, and a clean separation of concerns.
+robust error handling, fallback systems, modern UX, and a clean separation
+of concerns. The visual improvements make it engaging while maintaining
+excellent performance and mobile responsiveness.
