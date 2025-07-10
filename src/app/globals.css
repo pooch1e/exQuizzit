@@ -29,3 +29,40 @@ body {
 .thick-yellow-border {
   border: 8px solid #facc15; /* yellow-400 in Tailwind */
 }
+
+/* Thin yellow border for hover effects */
+.thin-yellow-border {
+  border: 2px solid #facc15; /* yellow-400 in Tailwind */
+}
+
+/* Custom scrollbar styles for leaderboard */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 0.375rem;
+}
+
+.scrollbar-track-gray-100::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 0.375rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 0.375rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
