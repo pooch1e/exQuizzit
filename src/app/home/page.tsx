@@ -1,11 +1,16 @@
 import Link from 'next/link';
 import SpaceBackground from '@/components/SpaceBackground';
+import EarthAnimation from '@/components/EarthAnimation';
 
 export default function Home() {
   return (
     <SpaceBackground className="flex items-center justify-center p-4">
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl thick-yellow-border p-8 max-w-md w-full text-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-2">exQuizzit</h1>
+        
+        {/* Earth Animation */}
+        <EarthAnimation />
+        
         <p className="text-gray-600 mb-8">Test your knowledge of countries around the world!</p>
         
         <div className="space-y-4">
