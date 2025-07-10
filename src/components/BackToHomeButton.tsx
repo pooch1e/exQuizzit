@@ -1,12 +1,25 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { ReactNode } from "react";
 
-export const BackToHomeButton = ({ children }) => {
+interface BackToHomeButtonProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export const BackToHomeButton = ({
+  children,
+  className = "",
+}: BackToHomeButtonProps) => {
   const router = useRouter();
 
   function handleBackToHome() {
     router.push("/home");
   }
 
-  return <button onClick={handleBackToHome}>{children}</button>;
+  return (
+    <button onClick={handleBackToHome} className={`w-full ${className}`}>
+      {children}
+    </button>
+  );
 };
