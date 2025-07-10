@@ -59,14 +59,13 @@ export default function SeedUserPage() {
         onSubmit={handleSeedSubmit}
         className="bg-white bg-opacity-90 p-8 rounded-xl shadow-2xl w-full max-w-md border-4 border-yellow-400"
       >
-        <h1 className="text-3xl font-extrabold text-center text-blue-700 mb-6 drop-shadow-md">
-          🎮 exQuizzit
+        <h1 className="text-6xl font-black text-yellow-400 mb-6 tracking-wide font-mono drop-shadow-lg text-center" style={{ textShadow: '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black' }}>
+          exQuizzit
         </h1>
 
         {/* Email */}
         <label className="block mb-2 font-semibold text-gray-700">Email</label>
         <div className="flex items-center border-2 border-blue-400 rounded mb-4 px-3 py-2">
-          <span className="text-xl text-gray-600 mr-2">📧</span>
           <input
             type="email"
             className="w-full focus:outline-none bg-transparent"
@@ -81,7 +80,6 @@ export default function SeedUserPage() {
           Username
         </label>
         <div className="flex items-center border-2 border-blue-400 rounded mb-4 px-3 py-2">
-          <span className="text-xl text-gray-600 mr-2">🎮</span>
           <input
             type="text"
             className="w-full focus:outline-none bg-transparent"
@@ -110,14 +108,14 @@ export default function SeedUserPage() {
             type="submit"
             className="w-full bg-yellow-400 text-blue-900 font-bold py-2 rounded hover:bg-yellow-300 transition duration-200 shadow-md"
           >
-            🚀 Seed User
+            Create Account
           </button>
 
           <button
             onClick={handleGuestClick}
             className="w-full bg-yellow-400 text-blue-900 font-bold py-2 rounded hover:bg-yellow-300 transition duration-200 shadow-md"
           >
-            🎮 Continue as Guest
+            Continue as Guest
           </button>
         </div>
       </form>
