@@ -57,16 +57,35 @@ export default function SeedUserPage() {
 
   //save Username to local storage
 
-  const handleLogInButton = (e) => {
+  const handleLogInButton = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    const foundUser = users.find((user) => user.userName === username);
-    console.log(foundUser, 'found user from find users');
 
-    if (foundUser) {
-      localStorage.setItem('currentUser', JSON.stringify(foundUser));
+    if (!username) {
+      setErrorMessage('Please enter a username');
+      return;
     }
-    router.push('/home');
+
+    try {
+      const formData = new FormData();
+      formData.append('username', username);
+
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        router.push('/home');
+      } else {
+        setErrorMessage(data.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setErrorMessage('Network error occurred');
+    }
   };
 
   function handleGuestClick() {

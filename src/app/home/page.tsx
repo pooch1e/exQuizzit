@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import SpaceBackground from '@/components/SpaceBackground';
 import EarthAnimation from '@/components/EarthAnimation';
+import { cookies } from 'next/headers';
 // import { getCurrentUser } from '../lib/utils/getCurrentUser';
 
 export default async function Home() {
   // Get the current logged-in user
-  const currentUser = localStorage.getItem('currentUser');
+  const cookieStore = await cookies();
+  const currentUser = cookieStore.get('username')?.value;
 
   // Fallback username if user not found
-  const displayName = currentUser?.userName || 'Guest';
+  const displayName = currentUser || 'Guest';
 
   return (
     <SpaceBackground className="flex items-center justify-center p-4">
