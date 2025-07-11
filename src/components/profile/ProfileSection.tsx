@@ -19,13 +19,12 @@ interface ProfileSectionProps {
 }
 
 export const ProfileSection = ({ user }: ProfileSectionProps) => {
-  console.log("inside profile section");
-
   return (
-    <div className="text-center">
+    <div className="flex flex-col items-center text-center space-y-4">
       <ProfileHeader user={user} />
 
       <ProfileBody user={user} />
     </div>
   );
 };
+
