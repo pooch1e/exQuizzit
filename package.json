@@ -22,6 +22,7 @@
     "@prisma/client": "^6.11.1",
     "@supabase/supabase-js": "^2.50.3",
     "dotenv": "^17.0.1",
+    "he": "^1.2.0",
     "lottie-web": "^5.13.0",
     "next": "15.3.4",
     "node-fetch": "^3.3.2",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/he": "^1.2.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,41 +1,35 @@
 import { getUsers } from "../../lib/utils/apiUtility/getUsers.ts";
-import { getCurrentUser } from "../../lib/utils/getCurrentUser";
 import { ProfileSection } from "../../../components/profile/ProfileSection.tsx";
 import { BackToHomeButton } from "@/components/BackToHomeButton.tsx";
 import SpaceBackground from "@/components/SpaceBackground";
+import { cookies } from "next/headers";
 
-interface ProfilePageProps {
-  searchParams: { user?: string };
-}
+import { LogOutButton } from "@/components/LogOutButton.tsx";
 
-export default async function ProfilePage({ searchParams }: ProfilePageProps) {
+export default async function ProfilePage() {
   console.log("inside profile section");
-  
-  let user;
-  
-  if (searchParams.user) {
-    // Get specific user from URL params
-    user = await getUsers(searchParams.user);
-  } else {
-    // Get current logged-in user
-    user = await getCurrentUser();
-  }
+  const cookieJar = await cookies();
+  const username: string | undefined = cookieJar.get("username")?.value;
 
-  // Handle case where user is not found
-  if (!user) {
-    const errorMessage = searchParams.user 
-      ? `User "${searchParams.user}" not found`
-      : "Unable to load user profile";
-      
+  console.log(username, "username");
+  const user = await getUsers(username);
+  console.log(user, "should be object");
+
+  if (user === null) {
     return (
       <SpaceBackground className="flex items-center justify-center p-4">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl thick-yellow-border p-12 max-w-4xl w-full mx-4 text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Profile Not Found</h2>
-          <p className="text-gray-600 mb-8">{errorMessage}</p>
-          <div className="flex justify-center">
-            <BackToHomeButton className="px-8 py-4 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-semibold text-lg">
+          {/* Link to sign up page */}
+          <div className="mb-8 flex flex-col items-center">
+            <p>Login to access profile page:</p>
+          </div>
+
+          {/* Button centered at bottom */}
+          <div className="mt-8 flex justify-center gap-4 w-full max-w-md">
+            <BackToHomeButton className="w-full px-8 py-4 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-semibold text-lg">
               Back to Home
             </BackToHomeButton>
+            <LogOutButton className="w-full px-8 py-4 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-semibold text-lg" />
           </div>
         </div>
       </SpaceBackground>
