@@ -1,18 +1,19 @@
-import { getUsers } from '../../lib/utils/apiUtility/getUsers.ts';
-import { ProfileSection } from '../../../components/profile/ProfileSection.tsx';
-import { BackToHomeButton } from '@/components/BackToHomeButton.tsx';
-import SpaceBackground from '@/components/SpaceBackground';
-import { cookies } from 'next/headers';
-import { useRouter } from 'next/router';
+import { getUsers } from "../../lib/utils/apiUtility/getUsers.ts";
+import { ProfileSection } from "../../../components/profile/ProfileSection.tsx";
+import { BackToHomeButton } from "@/components/BackToHomeButton.tsx";
+import SpaceBackground from "@/components/SpaceBackground";
+import { cookies } from "next/headers";
+
+import { LogOutButton } from "@/components/LogOutButton.tsx";
 
 export default async function ProfilePage() {
-  console.log('inside profile section');
+  console.log("inside profile section");
   const cookieJar = await cookies();
-  const username: string | undefined = cookieJar.get('username')?.value;
+  const username: string | undefined = cookieJar.get("username")?.value;
 
-  console.log(username, 'username');
+  console.log(username, "username");
   const user = await getUsers(username);
-  console.log(user, 'should be object');
+  console.log(user, "should be object");
 
   if (user === null) {
     return (
@@ -24,11 +25,11 @@ export default async function ProfilePage() {
           </div>
 
           {/* Button centered at bottom */}
-          <div className="mt-8 flex justify-center">
-            <BackToHomeButton className="px-8 py-4 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-semibold text-lg">
+          <div className="mt-8 flex justify-center gap-4 w-full max-w-md">
+            <BackToHomeButton className="w-full px-8 py-4 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-semibold text-lg">
               Back to Home
             </BackToHomeButton>
-            <p>If you do not have an account - sign up here:</p>
+            <LogOutButton className="w-full px-8 py-4 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-semibold text-lg" />
           </div>
         </div>
       </SpaceBackground>
