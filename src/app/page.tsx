@@ -88,7 +88,27 @@ export default function SeedUserPage() {
     }
   };
 
-  function handleGuestClick() {
+  async function handleGuestClick() {
+    try {
+      const formData = new FormData();
+      formData.append('username', 'guest');
+
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        router.push('/home');
+      } else {
+        setErrorMessage(data.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setErrorMessage('Network error occurred');
+    }
     router.push('/home');
   }
 
