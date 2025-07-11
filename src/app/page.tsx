@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from './lib/supabaseClient';
-import { users } from '../data/test-data/index.js';
 
 export default function SeedUserPage() {
   const [username, setUsername] = useState('');
@@ -49,11 +48,6 @@ export default function SeedUserPage() {
       }, 1000);
     }
   }
-
-  console.log(username, 'setting username');
-  //handle username click
-  // save username in global state/context
-  //for example Alice
 
   //save Username to local storage
 
