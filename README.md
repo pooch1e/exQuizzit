@@ -13,6 +13,13 @@ pnpm dev
 # or
 bun dev
 ```
+# npm packages
+
+npm install uuid
+npm install react-icons
+npm install react-countup
+npm install he
+npm install --save-dev @types/he
 
 # Creating DB
 
