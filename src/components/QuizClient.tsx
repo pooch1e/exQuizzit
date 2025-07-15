@@ -51,18 +51,21 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const [isLoadingNewQuiz, setIsLoadingNewQuiz] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
   const [userId, setUserId] = useState<string | null>(null);
+  const [quizzBucks, setQuizzBucks] = useState<number | null>(0);
 
-  //grab user id from browser cookie
-
+  //dirty api call to get user object
   useEffect(() => {
-    const id = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('userId='))
-      ?.split('=')[1];
-
-    if (id) {
-      setUserId(id);
+    async function fetchUser() {
+      try {
+        const response = await fetch('/api/users/Alice');
+        if (!response.ok) throw new Error('User not found');
+        const data = await response.json();
+        setUserId(data.userId);
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      }
     }
+    fetchUser();
   }, []);
 
   // Lifeline states
@@ -169,14 +172,16 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setScore(score + 1);
     setShowDidYouKnow(true);
     // update quizzbucks
-
+    console.log(userId, 'is user id present?');
     if (userId) {
       try {
-        await updateQuizzBucksByUserId(userId, 10);
+        const updatedBucks = await updateQuizzBucksByUserId(userId, 10);
+        console.log(updatedBucks, 'did bucks update correctly?');
       } catch (err) {
         console.log(err, 'failed to update quizzbucks');
       }
     }
+    setQuizzBucks(quizzBucks + 10);
   };
 
   const handleNextFromCorrect = () => {
@@ -306,7 +311,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
           <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2 sm:py-3 border border-white/20">
             <span className="text-base sm:text-lg font-medium text-white">
               🪙 QuizzBucks:{' '}
-              <span className="text-yellow-300 font-bold">0</span>
+              <span className="text-yellow-300 font-bold">{quizzBucks}</span>
             </span>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2 sm:py-3 border border-white/20">

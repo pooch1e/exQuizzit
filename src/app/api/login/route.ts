@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({ success: true, username });
 
-    // ✅ Set both username and userId as cookies
     response.cookies.set('username', username, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -25,7 +24,6 @@ export async function POST(request: NextRequest) {
     });
 
     response.cookies.set('userId', userId, {
-      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24, // 1 day
