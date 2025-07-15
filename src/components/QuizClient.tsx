@@ -54,6 +54,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
   const [skipUsed, setSkipUsed] = useState(false);
   const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
+  const [extraLifeUsed, setExtraLifeUsed] = useState(false);
 
   // Timer countdown effect
   useEffect(() => {
@@ -100,8 +101,18 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
 
   const handleWrongAnswer = () => {
     playIncorrectSound();
-    setShowWrongAnswer(true);
+    setShowGameOverModal(true);
   };
+
+  const handleExtraLife = () => {
+    setExtraLifeUsed(true);
+    setShowGameOverModal(false);
+    setShowWrongAnswer(false);
+    setShowDidYouKnow(false);
+    setTimeLeft(10); // Reset timer
+  }
+
+
 
   const handleTryAgain = async () => {
     setShowGameOverModal(false);
@@ -111,11 +122,13 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setScore(0);
     setShowDidYouKnow(false);
     setTimeLeft(10); // Reset timer
+    setExtraLifeUsed(false);
 
     await loadNewQuestions();
   };
 
   const handleGoHome = () => {
+    setExtraLifeUsed(false);
     router.push("/home");
   };
 
@@ -215,6 +228,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setFiftyFiftyUsed(false);
     setSkipUsed(false);
     setDisabledOptions([]);
+    setExtraLifeUsed(false);
 
     await loadNewQuestions();
   };
@@ -361,65 +375,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                   : "Next Question ➡️"}
               </button>
             </div>
-          ) : (
-            /* Wrong Answer Section */
-            <div className="text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold text-red-600 mb-4">
-                ❌ Wrong Answer!
-              </h2>
-
-              {/* Show correct flag for flag questions */}
-              {question.type === "flag" &&
-                (question.country || question.countryData) && (
-                  <div className="mb-4">
-                    <p className="text-base sm:text-lg text-gray-600 mb-4">
-                      The correct answer was:
-                    </p>
-                    <img
-                      src={question.country?.flagUrl || question.correctAnswer}
-                      alt={`Flag of ${
-                        question.country?.name || question.countryData?.name
-                      }`}
-                      className="w-20 h-12 sm:w-24 sm:h-16 mx-auto rounded-md shadow-md object-cover mb-2"
-                    />
-                    <p className="text-lg sm:text-xl font-bold text-gray-800">
-                      {question.country?.name || question.countryData?.name}
-                    </p>
-                  </div>
-                )}
-
-              {/* Show correct answer for trivia questions */}
-              {question.type === "trivia" && (
-                <div className="mb-4">
-                  <p className="text-base sm:text-lg text-gray-600 mb-2">
-                    The correct answer was:
-                  </p>
-                  <p className="text-lg sm:text-xl font-bold text-gray-800">
-                    {question.correctAnswer}
-                  </p>
-                </div>
-              )}
-
-              <p className="text-gray-600 mb-4">
-                Final Score: <span className="font-semibold">{score}</span>
-              </p>
-
-              <div className="space-y-2">
-                <button
-                  onClick={handleTryAgain}
-                  className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-semibold text-sm"
-                >
-                  Try Again 🔄
-                </button>
-                <button
-                  onClick={handleGoHome}
-                  className="w-full bg-slate-600 text-white py-2 px-4 rounded-lg hover:bg-slate-700 transition-colors font-semibold text-sm"
-                >
-                  Back to Home 🏠
-                </button>
-              </div>
-            </div>
-          )}
+          ) : showWrongAnswer ? null : null}
         </div>
 
         {/* Timer Bar - Only show when not in result states */}
@@ -554,13 +510,13 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
       </div>
 
       {/* Game Over Modal */}
-      {showGameOverModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 sm:p-8 max-w-sm w-full text-center">
+      {showGameOverModal  && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
+          <div className="absolute inset-0 bg-transparent bg-opacity-10 backdrop-blur-sm pointer-events-auto" />
+          <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 sm:p-8 max-w-sm w-full text-center pointer-events-auto">
             <h2 className="text-2xl sm:text-3xl font-bold text-red-600 mb-4">
               ❌ Wrong Answer!
             </h2>
-
             {/* Show correct flag for flag questions */}
             {questions[currentQuestion]?.type === "flag" &&
               questions[currentQuestion]?.country && (
@@ -571,9 +527,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                   <div className="flex items-center justify-center h-16 sm:h-20 mb-4">
                     <img
                       src={questions[currentQuestion].country!.flagUrl}
-                      alt={`Flag of ${
-                        questions[currentQuestion].country!.name
-                      }`}
+                      alt={`Flag of ${questions[currentQuestion].country!.name}`}
                       className="max-w-full max-h-full object-contain rounded-md shadow-md"
                     />
                   </div>
@@ -582,7 +536,6 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                   </p>
                 </div>
               )}
-
             {/* Show text answer for trivia questions */}
             {questions[currentQuestion]?.type === "trivia" && (
               <div className="mb-6">
@@ -594,12 +547,16 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                 </p>
               </div>
             )}
-
             <p className="text-gray-600 mb-6 sm:mb-8">
               Final Score: <span className="font-semibold">{score}</span>
             </p>
-
             <div className="space-y-3">
+              {!extraLifeUsed && (<button
+                onClick={handleExtraLife}
+                className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+              >
+                Use Extra Life ❤️‍🔥
+              </button>)}
               <button
                 onClick={handleTryAgain}
                 className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors font-semibold"
