@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../lib/prisma';
-import { getUsers } from '@/app/lib/utils/apiUtility/getUsers';
 
 // GET ALL USERS
 export async function GET() {

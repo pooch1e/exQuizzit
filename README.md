@@ -13,6 +13,7 @@ pnpm dev
 # or
 bun dev
 ```
+
 # npm packages
 
 npm install uuid
@@ -93,3 +94,7 @@ To test database, will have to add to test-seed file any new models and reinterg
   - CountryService: Manages data access (database/fallback data)
   - QuizService: Contains logic for question generation
   - API Handler: Orchestrates services and handles HTTP concerns
+
+# Log In
+
+Please login with Alice or as a Guest
