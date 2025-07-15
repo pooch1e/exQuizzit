@@ -46,6 +46,11 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const [showWrongAnswer, setShowWrongAnswer] = useState(false);
   const [isLoadingNewQuiz, setIsLoadingNewQuiz] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
+  
+  // Lifeline states
+  const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
+  const [skipUsed, setSkipUsed] = useState(false);
+  const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
 
   // Timer countdown effect
   useEffect(() => {
@@ -147,6 +152,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setShowDidYouKnow(false);
     setSelectedAnswer("");
     setTimeLeft(10); // Reset timer
+    setDisabledOptions([]); // Reset disabled options for next question
 
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion(currentQuestion + 1);
@@ -159,7 +165,40 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setShowWrongAnswer(false);
     setSelectedAnswer("");
     setTimeLeft(10); // Reset timer
+    setDisabledOptions([]); // Reset disabled options for next question
 
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setQuizComplete(true);
+    }
+  };
+
+  // Lifeline functions
+  const handleFiftyFifty = () => {
+    if (fiftyFiftyUsed || showDidYouKnow || showWrongAnswer) return;
+    
+    const correctAnswer = questions[currentQuestion].correctAnswer;
+    const incorrectOptions = questions[currentQuestion].options.filter(
+      option => option !== correctAnswer
+    );
+    
+    // Randomly select 2 incorrect options to disable
+    const shuffledIncorrect = [...incorrectOptions].sort(() => Math.random() - 0.5);
+    const optionsToDisable = shuffledIncorrect.slice(0, 2);
+    
+    setDisabledOptions(optionsToDisable);
+    setFiftyFiftyUsed(true);
+  };
+
+  const handleSkipQuestion = () => {
+    if (skipUsed || showDidYouKnow || showWrongAnswer) return;
+    
+    setSkipUsed(true);
+    setSelectedAnswer("");
+    setTimeLeft(10); // Reset timer
+    setDisabledOptions([]); // Reset disabled options
+    
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
@@ -176,6 +215,11 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setShowDidYouKnow(false);
     setShowWrongAnswer(false);
     setTimeLeft(10); // Reset timer
+    
+    // Reset lifelines
+    setFiftyFiftyUsed(false);
+    setSkipUsed(false);
+    setDisabledOptions([]);
 
     await loadNewQuestions();
   };
@@ -397,45 +441,89 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
           </div>
         )}
 
+        {/* Lifeline Buttons - Only show during active quiz */}
+        {!showDidYouKnow && !showWrongAnswer && (
+          <div className="mb-4 sm:mb-6 max-w-sm mx-auto">
+            <div className="flex gap-2 sm:gap-3 justify-center">
+              <button
+                onClick={handleFiftyFifty}
+                disabled={fiftyFiftyUsed}
+                className={`flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 ${
+                  fiftyFiftyUsed
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
+                    : "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg transform hover:scale-105"
+                }`}
+              >
+                <span className="block text-xs sm:text-sm font-bold">50:50</span>
+                <span className="block text-xs opacity-90">
+                  {fiftyFiftyUsed ? "Used" : "Remove 2"}
+                </span>
+              </button>
+              
+              <button
+                onClick={handleSkipQuestion}
+                disabled={skipUsed}
+                className={`flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 ${
+                  skipUsed
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
+                    : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-lg transform hover:scale-105"
+                }`}
+              >
+                <span className="block text-xs sm:text-sm font-bold">SKIP</span>
+                <span className="block text-xs opacity-90">
+                  {skipUsed ? "Used" : "Next →"}
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Answer Buttons - 2x2 Grid */}
         <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6 max-w-sm mx-auto">
-          {question.options.map((option, index) => (
-            <button
-              key={index}
-              onClick={() =>
-                !showDidYouKnow &&
-                !showWrongAnswer &&
-                handleAnswerSelect(option)
-              }
-              disabled={showDidYouKnow || showWrongAnswer}
-              className={`p-2 sm:p-3 md:p-4 rounded-xl text-center font-medium transition-all duration-200 min-h-[60px] sm:min-h-[70px] md:min-h-[80px] flex items-center justify-center ${
-                showDidYouKnow || showWrongAnswer
-                  ? option === question.correctAnswer
-                    ? "bg-green-100 border-4 border-green-600 shadow-green-200"
-                    : option === selectedAnswer
-                    ? "bg-red-100 border-2 border-red-500 shadow-red-200"
-                    : "bg-gray-100 border-2 border-gray-300"
-                  : selectedAnswer === option
-                  ? "bg-purple-100 border-2 border-purple-500 shadow-purple-200"
-                  : "bg-gray-50 border-2 border-gray-300 hover:bg-gray-200 hover:border-4 hover:border-yellow-400 active:bg-purple-100 hover:shadow-lg"
-              }`}
-            >
-              {question.type === "flag" ? (
-                <div className="w-full h-full flex items-center justify-center p-1">
-                  <img
-                    src={option}
-                    alt={`Flag option ${index + 1}`}
-                    className="w-full h-full object-cover rounded"
-                    style={{ aspectRatio: "3/2" }}
-                  />
-                </div>
-              ) : (
-                <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-800 leading-tight text-center break-words">
-                  {option}
-                </div>
-              )}
-            </button>
-          ))}
+          {question.options.map((option, index) => {
+            const isDisabled = disabledOptions.includes(option);
+            const isClickable = !showDidYouKnow && !showWrongAnswer && !isDisabled;
+            
+            return (
+              <button
+                key={index}
+                onClick={() => isClickable && handleAnswerSelect(option)}
+                disabled={showDidYouKnow || showWrongAnswer || isDisabled}
+                className={`p-2 sm:p-3 md:p-4 rounded-xl text-center font-medium transition-all duration-200 min-h-[60px] sm:min-h-[70px] md:min-h-[80px] flex items-center justify-center ${
+                  isDisabled
+                    ? "bg-gray-200 border-2 border-gray-300 opacity-40 cursor-not-allowed"
+                    : showDidYouKnow || showWrongAnswer
+                    ? option === question.correctAnswer
+                      ? "bg-green-100 border-4 border-green-600 shadow-green-200"
+                      : option === selectedAnswer
+                      ? "bg-red-100 border-2 border-red-500 shadow-red-200"
+                      : "bg-gray-100 border-2 border-gray-300"
+                    : selectedAnswer === option
+                    ? "bg-purple-100 border-2 border-purple-500 shadow-purple-200"
+                    : "bg-gray-50 border-2 border-gray-300 hover:bg-gray-200 hover:border-4 hover:border-yellow-400 active:bg-purple-100 hover:shadow-lg"
+                }`}
+              >
+                {question.type === "flag" ? (
+                  <div className="w-full h-full flex items-center justify-center p-1">
+                    <img
+                      src={option}
+                      alt={`Flag option ${index + 1}`}
+                      className={`w-full h-full object-cover rounded ${
+                        isDisabled ? "grayscale" : ""
+                      }`}
+                      style={{ aspectRatio: "3/2" }}
+                    />
+                  </div>
+                ) : (
+                  <div className={`text-xs sm:text-sm md:text-base font-semibold leading-tight text-center break-words ${
+                    isDisabled ? "text-gray-400" : "text-gray-800"
+                  }`}>
+                    {option}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {showResult && !showDidYouKnow && (
