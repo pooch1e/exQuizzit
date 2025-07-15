@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../lib/prisma';
 
+// GET ALL USERS
 export async function GET() {
   try {
     const users = await prisma.user.findMany({
@@ -23,5 +24,39 @@ export async function GET() {
       { error: 'Failed to fetch users' },
       { status: 500 }
     );
+  }
+}
+
+// POST A USER
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    const {
+      email,
+      userName,
+      avatar,
+      highScore,
+      quizzBuckTotal,
+      questionsCorrect,
+    } = body;
+
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        userName,
+        avatar,
+        highScore,
+        quizzBuckTotal,
+        questionsCorrect,
+      },
+    });
+
+    return NextResponse.json(
+      { message: 'User Created', user: newUser },
+      { status: 201 }
+    );
+  } catch (err) {
+    return NextResponse.json({ error: err, status: 400 });
   }
 }
