@@ -1,3 +1,9 @@
+interface TriviaQuestion {
+  question: string;
+  correct_answer: string;
+  incorrect_answers: string[];
+}
+
 export class TriviaService {
   private timeoutId = 10000;
 

@@ -1,16 +1,53 @@
 "use client";
 
-import { FaEnvelope, FaStar, FaCoins, FaMedal, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaStar,
+  FaCoins,
+  FaMedal,
+  FaCalendarAlt,
+} from "react-icons/fa";
 import CountUp from "react-countup";
 
-export const ProfileBody = ({ user }) => {
+interface User {
+  userName: string | null;
+  email: string;
+  highScore: number;
+  quizzBuckTotal: number;
+  createdAt: Date;
+}
+
+interface ProfileBodyProps {
+  user: User;
+}
+
+export const ProfileBody = ({ user }: ProfileBodyProps) => {
   const { userName, email, highScore, quizzBuckTotal, createdAt } = user;
 
-  const getLevel = (score) => {
-    if (score >= 1000) return { label: "Legend", color: "bg-red-500", icon: <FaMedal className="text-white" /> };
-    if (score >= 500) return { label: "Pro", color: "bg-yellow-500", icon: <FaMedal className="text-white" /> };
-    if (score >= 200) return { label: "Rookie", color: "bg-blue-500", icon: <FaMedal className="text-white" /> };
-    return { label: "Newbie", color: "bg-gray-400", icon: <FaMedal className="text-white" /> };
+  const getLevel = (score: number) => {
+    if (score >= 1000)
+      return {
+        label: "Legend",
+        color: "bg-red-500",
+        icon: <FaMedal className="text-white" />,
+      };
+    if (score >= 500)
+      return {
+        label: "Pro",
+        color: "bg-yellow-500",
+        icon: <FaMedal className="text-white" />,
+      };
+    if (score >= 200)
+      return {
+        label: "Rookie",
+        color: "bg-blue-500",
+        icon: <FaMedal className="text-white" />,
+      };
+    return {
+      label: "Newbie",
+      color: "bg-gray-400",
+      icon: <FaMedal className="text-white" />,
+    };
   };
 
   const level = getLevel(highScore);
@@ -24,7 +61,9 @@ export const ProfileBody = ({ user }) => {
   return (
     <div className="w-full flex flex-col items-center gap-6 text-center">
       {/* Username */}
-      <h2 className="text-3xl font-bold text-purple-700">{userName}</h2>
+      <h2 className="text-3xl font-bold text-purple-700">
+        {userName || "Anonymous"}
+      </h2>
 
       {/* Email */}
       <p className="flex items-center justify-center gap-2 text-sm text-gray-500">

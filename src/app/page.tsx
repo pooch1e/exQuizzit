@@ -51,7 +51,7 @@ export default function SeedUserPage() {
 
   //save Username to local storage
 
-  const handleLogInButton = async (e) => {
+  const handleLogInButton = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
