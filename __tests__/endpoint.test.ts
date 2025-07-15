@@ -1,4 +1,4 @@
-import { POST } from '../src/app/api/users/route'
+import { POST } from '../src/app/api/users/route';
 
 describe('POST /api/users', () => {
   it('returns 201 when user is created', async () => {
@@ -11,14 +11,20 @@ describe('POST /api/users', () => {
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+    });
 
-    const response = await POST(request)
-    const data = await response.json()
+    const response = await POST(request);
+    const data = await response.json();
 
-    expect(response.status).toBe(201)
-    expect(data).toHaveProperty('userName')
-    expect(data.user).toHaveProperty('email')
-    expect(data.message).toBe('User created successfully')
-  })
-})
+    expect(response.status).toBe(201);
+    expect(data).toHaveProperty('userName');
+    expect(data.user).toHaveProperty('email');
+    expect(data.message).toBe('User created successfully');
+  });
+});
+
+describe('UPDATE: user/:userId', () => {
+  test('updates userId with correct quizzbuck total', () => {
+    console.log('test not working');
+  });
+});
