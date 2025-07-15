@@ -12,7 +12,7 @@ datasource db {
 }
 
 model User {
-  userId           String   @id @default(dbgenerated()) @map("id")
+  userId           String   @id @default(uuid()) @map("id")
   email            String   @unique
   userName         String?
   avatar           String?
