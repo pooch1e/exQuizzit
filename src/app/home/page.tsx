@@ -2,16 +2,16 @@ import Link from "next/link";
 import SpaceBackground from "@/components/SpaceBackground";
 import EarthAnimation from "@/components/EarthAnimation";
 import BackgroundMusic from "@/components/BackgroundMusic";
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 // import { getCurrentUser } from '../lib/utils/getCurrentUser';
 
 export default async function Home() {
   // Get the current logged-in user
   const cookieStore = await cookies();
-  const currentUser = cookieStore.get('username')?.value;
+  const currentUser = cookieStore.get("username")?.value;
 
   // Fallback username if user not found
-  const displayName = currentUser || 'Guest';
+  const displayName = currentUser || "Guest";
 
   return (
     <SpaceBackground className="flex items-center justify-center p-4">
@@ -29,7 +29,8 @@ export default async function Home() {
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                className="text-gray-600">
+                className="text-gray-600"
+              >
                 <path
                   d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                   fill="currentColor"
@@ -42,8 +43,9 @@ export default async function Home() {
           className="text-6xl font-black text-yellow-400 mb-2 tracking-wide font-mono drop-shadow-lg mt-8"
           style={{
             textShadow:
-              '1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black',
-          }}>
+              "1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black",
+          }}
+        >
           exQuizzit
         </h1>
 
@@ -57,13 +59,15 @@ export default async function Home() {
         <div className="space-y-4">
           <Link
             href="/quiz"
-            className="block w-full bg-purple-600 text-white py-4 px-6 rounded-lg hover:bg-purple-700 hover:scale-110 transition-all duration-200 font-semibold text-lg">
+            className="block w-full bg-purple-600 text-white py-4 px-6 rounded-lg hover:bg-purple-700 hover:scale-110 transition-all duration-200 font-semibold text-lg"
+          >
             Start Quiz 🚀
           </Link>
 
           <Link
             href="/leaderboard"
-            className="block w-full bg-slate-600 text-white py-3 px-6 rounded-lg hover:bg-slate-700 hover:scale-110 transition-all duration-200 font-semibold">
+            className="block w-full bg-slate-600 text-white py-3 px-6 rounded-lg hover:bg-slate-700 hover:scale-110 transition-all duration-200 font-semibold"
+          >
             View Leaderboard 🏆
           </Link>
 

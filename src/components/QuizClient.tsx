@@ -167,19 +167,6 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     }
   };
 
-  const handleNextFromWrong = () => {
-    setShowWrongAnswer(false);
-    setSelectedAnswer("");
-    setTimeLeft(10); // Reset timer
-    setDisabledOptions([]); // Reset disabled options for next question
-
-    if (currentQuestion + 1 < questions.length) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setQuizComplete(true);
-    }
-  };
-
   // Lifeline functions
   const handleFiftyFifty = () => {
     if (fiftyFiftyUsed || showDidYouKnow || showWrongAnswer) return;

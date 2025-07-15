@@ -6,17 +6,18 @@ import { cookies } from "next/headers";
 import { LogOutButton } from "@/components/LogOutButton.tsx";
 
 interface ProfilePageProps {
-  searchParams: { user?: string };
+  searchParams: Promise<{ user?: string }>;
 }
 
 export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   console.log("inside profile section");
 
+  const params = await searchParams;
   let user;
 
-  if (searchParams.user) {
+  if (params.user) {
     // Get specific user from URL params
-    user = await getUsers(searchParams.user);
+    user = await getUsers(params.user);
   } else {
     // Get current logged-in user from cookies
     const cookieJar = await cookies();
@@ -28,8 +29,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
 
   // Handle case where user is not found
   if (!user) {
-    const errorMessage = searchParams.user
-      ? `User "${searchParams.user}" not found`
+    const errorMessage = params.user
+      ? `User "${params.user}" not found`
       : "Login to access profile page";
 
     return (
