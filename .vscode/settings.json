@@ -1,32 +1,3 @@
 {
-  "postman.settings.dotenv-detection-notification-visibility": false,
-  "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#ffffff",
-    "activityBar.background": "#ffffff",
-    "activityBar.foreground": "#15202b",
-    "activityBar.inactiveForeground": "#15202b99",
-    "activityBarBadge.background": "#df9f9f",
-    "activityBarBadge.foreground": "#15202b",
-    "commandCenter.border": "#15202b99",
-    "editorGroup.border": "#ffffff",
-    "panel.border": "#ffffff",
-    "sash.hoverBorder": "#ffffff",
-    "sideBar.border": "#ffffff",
-    "statusBar.background": "#ffd9e0",
-    "statusBar.border": "#ffd9e0",
-    "statusBar.debuggingBackground": "#d9fff8",
-    "statusBar.debuggingBorder": "#d9fff8",
-    "statusBar.debuggingForeground": "#15202b",
-    "statusBar.foreground": "#15202b",
-    "statusBarItem.hoverBackground": "#ffa6b6",
-    "statusBarItem.remoteBackground": "#ffd9e0",
-    "statusBarItem.remoteForeground": "#15202b",
-    "tab.activeBorder": "#ffffff",
-    "titleBar.activeBackground": "#ffd9e0",
-    "titleBar.activeForeground": "#15202b",
-    "titleBar.border": "#ffd9e0",
-    "titleBar.inactiveBackground": "#ffd9e099",
-    "titleBar.inactiveForeground": "#15202b99"
-  },
-  "peacock.color": "#ffd9e0"
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
