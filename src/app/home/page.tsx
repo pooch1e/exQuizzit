@@ -1,6 +1,7 @@
-import Link from 'next/link';
-import SpaceBackground from '@/components/SpaceBackground';
-import EarthAnimation from '@/components/EarthAnimation';
+import Link from "next/link";
+import SpaceBackground from "@/components/SpaceBackground";
+import EarthAnimation from "@/components/EarthAnimation";
+import BackgroundMusic from "@/components/BackgroundMusic";
 import { cookies } from 'next/headers';
 // import { getCurrentUser } from '../lib/utils/getCurrentUser';
 
@@ -14,6 +15,7 @@ export default async function Home() {
 
   return (
     <SpaceBackground className="flex items-center justify-center p-4">
+      <BackgroundMusic />
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl thick-yellow-border p-8 max-w-md w-full text-center mt-16 relative">
         {/* Profile Section in Top Right Corner of Card */}
         <div className="absolute top-4 right-4 flex items-center gap-3 z-40">
