@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SpaceBackground from "./SpaceBackground";
+import BackgroundMusic from "./BackgroundMusic";
 
 interface Country {
   userId: number;
@@ -281,6 +282,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
 
   return (
     <SpaceBackground className="p-2 sm:p-4">
+      <BackgroundMusic />
       <div className="max-w-lg mx-auto pt-2 sm:pt-4">
         {/* Score and Bucks Display */}
         <div className="mb-4 flex justify-between items-center px-4">
@@ -441,89 +443,94 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
           </div>
         )}
 
-        {/* Lifeline Buttons - Only show during active quiz */}
-        {!showDidYouKnow && !showWrongAnswer && (
-          <div className="mb-4 sm:mb-6 max-w-sm mx-auto">
-            <div className="flex gap-2 sm:gap-3 justify-center">
+        {/* Answer Area with Lifeline Buttons */}
+        <div className="relative flex items-center justify-center mb-4 sm:mb-6">
+          {/* Lifeline Buttons - Positioned absolutely to the left */}
+          {!showDidYouKnow && !showWrongAnswer && (
+            <div className="absolute left-0 flex flex-col gap-2">
               <button
                 onClick={handleFiftyFifty}
                 disabled={fiftyFiftyUsed}
-                className={`flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 ${
+                className={`w-12 sm:w-14 h-16 sm:h-20 rounded-lg font-semibold text-xs transition-all duration-200 flex flex-col items-center justify-center ${
                   fiftyFiftyUsed
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
-                    : "bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg transform hover:scale-105"
+                    : "bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-lg transform hover:scale-105"
                 }`}
               >
-                <span className="block text-xs sm:text-sm font-bold">50:50</span>
-                <span className="block text-xs opacity-90">
-                  {fiftyFiftyUsed ? "Used" : "Remove 2"}
-                </span>
+                <span className="block text-sm font-bold">50:50</span>
+                {fiftyFiftyUsed && (
+                  <span className="block text-[8px] sm:text-[10px] opacity-90 text-center leading-tight">
+                    Used
+                  </span>
+                )}
               </button>
               
               <button
                 onClick={handleSkipQuestion}
                 disabled={skipUsed}
-                className={`flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 ${
+                className={`w-12 sm:w-14 h-16 sm:h-20 rounded-lg font-semibold text-xs transition-all duration-200 flex flex-col items-center justify-center ${
                   skipUsed
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
-                    : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-lg transform hover:scale-105"
+                    : "bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-lg transform hover:scale-105"
                 }`}
               >
-                <span className="block text-xs sm:text-sm font-bold">SKIP</span>
-                <span className="block text-xs opacity-90">
-                  {skipUsed ? "Used" : "Next →"}
-                </span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Answer Buttons - 2x2 Grid */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6 max-w-sm mx-auto">
-          {question.options.map((option, index) => {
-            const isDisabled = disabledOptions.includes(option);
-            const isClickable = !showDidYouKnow && !showWrongAnswer && !isDisabled;
-            
-            return (
-              <button
-                key={index}
-                onClick={() => isClickable && handleAnswerSelect(option)}
-                disabled={showDidYouKnow || showWrongAnswer || isDisabled}
-                className={`p-2 sm:p-3 md:p-4 rounded-xl text-center font-medium transition-all duration-200 min-h-[60px] sm:min-h-[70px] md:min-h-[80px] flex items-center justify-center ${
-                  isDisabled
-                    ? "bg-gray-200 border-2 border-gray-300 opacity-40 cursor-not-allowed"
-                    : showDidYouKnow || showWrongAnswer
-                    ? option === question.correctAnswer
-                      ? "bg-green-100 border-4 border-green-600 shadow-green-200"
-                      : option === selectedAnswer
-                      ? "bg-red-100 border-2 border-red-500 shadow-red-200"
-                      : "bg-gray-100 border-2 border-gray-300"
-                    : selectedAnswer === option
-                    ? "bg-purple-100 border-2 border-purple-500 shadow-purple-200"
-                    : "bg-gray-50 border-2 border-gray-300 hover:bg-gray-200 hover:border-4 hover:border-yellow-400 active:bg-purple-100 hover:shadow-lg"
-                }`}
-              >
-                {question.type === "flag" ? (
-                  <div className="w-full h-full flex items-center justify-center p-1">
-                    <img
-                      src={option}
-                      alt={`Flag option ${index + 1}`}
-                      className={`w-full h-full object-cover rounded ${
-                        isDisabled ? "grayscale" : ""
-                      }`}
-                      style={{ aspectRatio: "3/2" }}
-                    />
-                  </div>
-                ) : (
-                  <div className={`text-xs sm:text-sm md:text-base font-semibold leading-tight text-center break-words ${
-                    isDisabled ? "text-gray-400" : "text-gray-800"
-                  }`}>
-                    {option}
-                  </div>
+                <span className="block text-sm font-bold">SKIP</span>
+                {skipUsed && (
+                  <span className="block text-[8px] sm:text-[10px] opacity-90 text-center leading-tight">
+                    Used
+                  </span>
                 )}
               </button>
-            );
-          })}
+            </div>
+          )}
+
+          {/* Answer Buttons - 2x2 Grid - Truly Centered */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-sm mx-auto">
+            {question.options.map((option, index) => {
+              const isDisabled = disabledOptions.includes(option);
+              const isClickable = !showDidYouKnow && !showWrongAnswer && !isDisabled;
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => isClickable && handleAnswerSelect(option)}
+                  disabled={showDidYouKnow || showWrongAnswer || isDisabled}
+                  className={`p-2 sm:p-3 md:p-4 rounded-xl text-center font-medium transition-all duration-200 min-h-[60px] sm:min-h-[70px] md:min-h-[80px] flex items-center justify-center ${
+                    isDisabled
+                      ? "bg-gray-200 border-2 border-gray-300 opacity-40 cursor-not-allowed"
+                      : showDidYouKnow || showWrongAnswer
+                      ? option === question.correctAnswer
+                        ? "bg-green-100 border-4 border-green-600 shadow-green-200"
+                        : option === selectedAnswer
+                        ? "bg-red-100 border-2 border-red-500 shadow-red-200"
+                        : "bg-gray-100 border-2 border-gray-300"
+                      : selectedAnswer === option
+                      ? "bg-purple-100 border-2 border-purple-500 shadow-purple-200"
+                      : "bg-gray-50 border-2 border-gray-300 hover:bg-gray-200 hover:border-4 hover:border-yellow-400 active:bg-purple-100 hover:shadow-lg"
+                  }`}
+                >
+                  {question.type === "flag" ? (
+                    <div className="w-full h-full flex items-center justify-center p-1">
+                      <img
+                        src={option}
+                        alt={`Flag option ${index + 1}`}
+                        className={`w-full h-full object-cover rounded ${
+                          isDisabled ? "grayscale" : ""
+                        }`}
+                        style={{ aspectRatio: "3/2" }}
+                      />
+                    </div>
+                  ) : (
+                    <div className={`text-xs sm:text-sm md:text-base font-semibold leading-tight text-center break-words ${
+                      isDisabled ? "text-gray-400" : "text-gray-800"
+                    }`}>
+                      {option}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {showResult && !showDidYouKnow && (
