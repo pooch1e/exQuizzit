@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import SpaceBackground from "./SpaceBackground";
 import BackgroundMusic from "./BackgroundMusic";
 import { useAudio } from "@/contexts/AudioContext";
+import { updateQuizzBucksByUserId } from "@/app/lib/utils/apiUtility/updateQuizzBucksByUserId";
 
 interface Country {
   userId: number;
@@ -101,6 +102,9 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const handleWrongAnswer = () => {
     playIncorrectSound();
     setShowWrongAnswer(true);
+    //UPDATE final score to DB
+
+
   };
 
   const handleTryAgain = async () => {
@@ -148,10 +152,16 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     return selectedFact;
   };
 
-  const handleCorrectAnswer = () => {
+  const handleCorrectAnswer = async () => {
     playCorrectSound();
     setScore(score + 1);
     setShowDidYouKnow(true);
+    // update quizzbucks
+
+    try {
+      await updateQuizzBucksByUserId()
+    }
+
   };
 
   const handleNextFromCorrect = () => {
