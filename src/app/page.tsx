@@ -10,6 +10,7 @@ export default function SeedUserPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [suppressErrors, setSuppressErrors] = useState(false);
 
   const router = useRouter();
 
@@ -82,6 +83,10 @@ export default function SeedUserPage() {
   };
 
   async function handleGuestClick() {
+    setErrorMessage("");
+    setSuccessMessage("");
+    setSuppressErrors(true);
+
     try {
       const formData = new FormData();
       formData.append("username", "guest");
@@ -96,13 +101,11 @@ export default function SeedUserPage() {
       if (data.success) {
         router.push("/home");
       } else {
-        setErrorMessage(data.error || "Login failed");
+        console.warn("Guest login error:", data.error || "Login failed");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("Network error occurred");
+      console.error("Guest login error:", error);
     }
-    router.push("/home");
   }
 
   return (
@@ -150,7 +153,7 @@ export default function SeedUserPage() {
         </div>
 
         {/* Error Message */}
-        {errorMessage && (
+        {errorMessage && !suppressErrors && (
           <p className="text-red-600 text-sm font-semibold mb-4">
             {errorMessage}
           </p>
