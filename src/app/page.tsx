@@ -61,33 +61,32 @@ export default function SeedUserPage() {
     }
 
     try {
-      // 🔍 Look up user ID from Supabase
-      const { data: userData, error } = await supabase
-        .from('users')
-        .select('id')
-        .eq('userName', username)
-        .single();
+      const response = await fetch(
+        `/api/users/${encodeURIComponent(username)}`
+      );
 
-      if (error || !userData) {
+      if (!response.ok) {
         setErrorMessage('User not found');
         return;
       }
 
-      const formData = new FormData();
-      formData.append('username', username);
-      formData.append('userId', userData.id); // ✅ Append userId
+      const userData = await response.json();
 
-      const response = await fetch('/api/login', {
+      const formData = new FormData();
+      formData.append('username', userData.userName);
+      formData.append('userId', userData.userId.toString());
+
+      const loginResponse = await fetch('/api/login', {
         method: 'POST',
         body: formData,
       });
 
-      const data = await response.json();
+      const loginData = await loginResponse.json();
 
-      if (data.success) {
+      if (loginData.success) {
         router.push('/home');
       } else {
-        setErrorMessage(data.error || 'Login failed');
+        setErrorMessage(loginData.error || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
