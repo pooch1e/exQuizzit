@@ -49,3 +49,7 @@ describe('testing decode HTML util', () => {
     expect(decodeHTML('2 is &gt; than 4')).toBe('2 is > than 4');
   });
 });
+
+describe('update Quizzbucks by User ID util', () => {
+  test.todo('updates quizzbuck by user id')
+})

@@ -1,9 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
-  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,7 +10,7 @@ datasource db {
 model User {
   userId           String   @id @default(uuid()) @map("id")
   email            String   @unique
-  userName         String?
+  userName         String
   avatar           String?
   highScore        Int      @default(0)
   quizzBuckTotal   Int      @default(0)
@@ -22,7 +18,7 @@ model User {
   createdAt        DateTime @default(now())
   games            Game[]
 
-  @@map("users") // Syncs with actual database table name
+  @@map("users")
 }
 
 model Countries {
@@ -37,12 +33,11 @@ model Countries {
 }
 
 model Game {
-  id        String   @id @default(uuid()) // Unique ID for the Game record
+  id        String   @id @default(uuid())
   score     Int
   createdAt DateTime @default(now())
-  userId    String // Foreign key matching User.id
-
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@map("games")
 }
