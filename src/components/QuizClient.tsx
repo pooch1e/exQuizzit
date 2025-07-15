@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SpaceBackground from "./SpaceBackground";
 import BackgroundMusic from "./BackgroundMusic";
+import { useAudio } from "@/contexts/AudioContext";
 
 interface Country {
   userId: number;
@@ -36,6 +37,7 @@ interface QuizClientProps {
 
 export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const router = useRouter();
+  const { playCorrectSound, playIncorrectSound } = useAudio();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
@@ -47,7 +49,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const [showWrongAnswer, setShowWrongAnswer] = useState(false);
   const [isLoadingNewQuiz, setIsLoadingNewQuiz] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
-  
+
   // Lifeline states
   const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
   const [skipUsed, setSkipUsed] = useState(false);
@@ -64,6 +66,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   }, [timeLeft, showDidYouKnow, showWrongAnswer, quizComplete]);
 
   const handleTimeUp = () => {
+    playIncorrectSound();
     setShowWrongAnswer(true);
   };
 
@@ -96,6 +99,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   };
 
   const handleWrongAnswer = () => {
+    playIncorrectSound();
     setShowWrongAnswer(true);
   };
 
@@ -145,6 +149,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   };
 
   const handleCorrectAnswer = () => {
+    playCorrectSound();
     setScore(score + 1);
     setShowDidYouKnow(true);
   };
@@ -178,28 +183,30 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   // Lifeline functions
   const handleFiftyFifty = () => {
     if (fiftyFiftyUsed || showDidYouKnow || showWrongAnswer) return;
-    
+
     const correctAnswer = questions[currentQuestion].correctAnswer;
     const incorrectOptions = questions[currentQuestion].options.filter(
-      option => option !== correctAnswer
+      (option) => option !== correctAnswer
     );
-    
+
     // Randomly select 2 incorrect options to disable
-    const shuffledIncorrect = [...incorrectOptions].sort(() => Math.random() - 0.5);
+    const shuffledIncorrect = [...incorrectOptions].sort(
+      () => Math.random() - 0.5
+    );
     const optionsToDisable = shuffledIncorrect.slice(0, 2);
-    
+
     setDisabledOptions(optionsToDisable);
     setFiftyFiftyUsed(true);
   };
 
   const handleSkipQuestion = () => {
     if (skipUsed || showDidYouKnow || showWrongAnswer) return;
-    
+
     setSkipUsed(true);
     setSelectedAnswer("");
     setTimeLeft(10); // Reset timer
     setDisabledOptions([]); // Reset disabled options
-    
+
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
@@ -216,7 +223,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setShowDidYouKnow(false);
     setShowWrongAnswer(false);
     setTimeLeft(10); // Reset timer
-    
+
     // Reset lifelines
     setFiftyFiftyUsed(false);
     setSkipUsed(false);
@@ -464,7 +471,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                   </span>
                 )}
               </button>
-              
+
               <button
                 onClick={handleSkipQuestion}
                 disabled={skipUsed}
@@ -488,8 +495,9 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
           <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-sm mx-auto">
             {question.options.map((option, index) => {
               const isDisabled = disabledOptions.includes(option);
-              const isClickable = !showDidYouKnow && !showWrongAnswer && !isDisabled;
-              
+              const isClickable =
+                !showDidYouKnow && !showWrongAnswer && !isDisabled;
+
               return (
                 <button
                   key={index}
@@ -521,9 +529,11 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
                       />
                     </div>
                   ) : (
-                    <div className={`text-xs sm:text-sm md:text-base font-semibold leading-tight text-center break-words ${
-                      isDisabled ? "text-gray-400" : "text-gray-800"
-                    }`}>
+                    <div
+                      className={`text-xs sm:text-sm md:text-base font-semibold leading-tight text-center break-words ${
+                        isDisabled ? "text-gray-400" : "text-gray-800"
+                      }`}
+                    >
                       {option}
                     </div>
                   )}
