@@ -1,7 +1,8 @@
 import { POST } from '../src/app/api/users/route';
+import { PUT } from '../src/app/api/users/route';
 
 describe('POST /api/users', () => {
-  it('returns 201 when user is created', async () => {
+  test('returns 201 when user is created', async () => {
     const request = new Request('http://localhost/api/users', {
       method: 'POST',
       body: JSON.stringify({
@@ -15,16 +16,35 @@ describe('POST /api/users', () => {
 
     const response = await POST(request);
     const data = await response.json();
+    console.log(data);
 
     expect(response.status).toBe(201);
-    expect(data).toHaveProperty('userName');
+    expect(data).toHaveProperty('user');
     expect(data.user).toHaveProperty('email');
-    expect(data.message).toBe('User created successfully');
+    expect(data.message).toBe('User Created');
   });
 });
 
-describe('UPDATE: user/:userId', () => {
-  test('updates userId with correct quizzbuck total', () => {
-    console.log('test not working');
+describe('PUT: /user', () => {
+  test('updates user with correct quizzbuck total via username', async () => {
+    const request = new Request('http://localhost/api/users', {
+      method: 'PUT',
+      body: JSON.stringify({
+        id: 'b2c3d4e5-f6a7-8901-bcde-fa2345678901',
+        data: 10,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const response = await PUT(request);
+    const data = await response.json();
+    console.log(data);
+
+    expect(response.status).toBe(200);
+    expect(data).toHaveProperty('user');
+    expect(data.user).toHaveProperty('quizzBuckTotal');
+    expect(data.message).toBe('User Updated');
   });
 });
