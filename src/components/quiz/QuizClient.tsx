@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import SpaceBackground from './SpaceBackground';
-import BackgroundMusic from './BackgroundMusic';
+import SpaceBackground from '../SpaceBackground';
+import BackgroundMusic from '../BackgroundMusic';
 import { useAudio } from '@/contexts/AudioContext';
 import { updateQuizzBucksByUserId } from '@/app/lib/utils/apiUtility/updateQuizzBucksByUserId';
 
