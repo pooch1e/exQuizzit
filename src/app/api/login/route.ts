@@ -17,13 +17,14 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ success: true, username });
 
     response.cookies.set('username', username, {
-      httpOnly: true,
+      httpOnly: false, // Allow JavaScript access
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24, // 1 day
     });
 
     response.cookies.set('userId', userId, {
+      httpOnly: false, // Allow JavaScript access
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24, // 1 day
