@@ -5,6 +5,7 @@ import Link from "next/link";
 import SpaceBackground from "@/components/SpaceBackground";
 import EarthAnimation from "@/components/EarthAnimation";
 import BackgroundMusic from "@/components/BackgroundMusic";
+
 import LootboxButton from "@/components/LootboxButton";
 import LootboxSpinner from "@/components/LootboxSpinner";
 
@@ -47,6 +48,7 @@ export default function Home() {
         console.error('Error fetching current user:', error);
       }
     };
+
 
     fetchCurrentUser();
   }, []);

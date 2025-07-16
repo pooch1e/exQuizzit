@@ -121,9 +121,8 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     playIncorrectSound();
     setShowWrongAnswer(true);
     // setShowGameOverModal(true);
-    //UPDATE final score to DB
+    //TODO Update final score to DB
   };
-
 
   const handleTryAgain = async () => {
     setShowGameOverModal(false);
@@ -176,14 +175,13 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     playCorrectSound();
     setScore(score + 1);
     setShowDidYouKnow(true);
-    // update quizzbucks
+    // Update quizzbucks
     console.log(userId, 'is user id present?');
     if (userId) {
       try {
-        const updatedBucks = await updateQuizzBucksByUserId(userId, 10);
-        console.log(updatedBucks, 'did bucks update correctly?');
+        await updateQuizzBucksByUserId(userId, 10);
       } catch (err) {
-        console.log(err, 'failed to update quizzbucks');
+        console.log(err, 'Error updating QuizzBucks');
       }
     }
     setQuizzBucks(quizzBucks + 10);
@@ -241,7 +239,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
     setTimeLeft(10);
     setShowGameOverModal(false);
     setShowWrongAnswer(false);
-  }
+  };
 
   const restartQuiz = async () => {
     setCurrentQuestion(0);
@@ -445,12 +443,13 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
               </p>
 
               <div className="space-y-2">
-                  {!usedExtraLife && (<button
-                      onClick={handleExtraLife}
-                      className="w-40 bg-purple-800 text-white py-2 px-4 rounded-lg hover:bg-green-900 transition-colors font-semibold text-sm"
-                  >
-                  Use Extra Life? ❤️‍🔥
-                </button>)}
+                {!usedExtraLife && (
+                  <button
+                    onClick={handleExtraLife}
+                    className="w-40 bg-purple-800 text-white py-2 px-4 rounded-lg hover:bg-green-900 transition-colors font-semibold text-sm">
+                    Use Extra Life? ❤️‍🔥
+                  </button>
+                )}
                 <button
                   onClick={handleTryAgain}
                   className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-semibold text-sm">
@@ -639,12 +638,13 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
             </p>
 
             <div className="space-y-3">
-              {!usedExtraLife && (<button
-                      onClick={handleExtraLife}
-                      className="w-40 bg-purple-800 text-white py-2 px-4 rounded-lg hover:bg-green-900 transition-colors font-semibold text-sm"
-                  >
+              {!usedExtraLife && (
+                <button
+                  onClick={handleExtraLife}
+                  className="w-40 bg-purple-800 text-white py-2 px-4 rounded-lg hover:bg-green-900 transition-colors font-semibold text-sm">
                   Use Extra Life? ❤️‍🔥
-                </button>)}
+                </button>
+              )}
               <button
                 onClick={handleTryAgain}
                 className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors font-semibold">
