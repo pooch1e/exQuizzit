@@ -1,100 +1,207 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# exQuizzit
+
+exQuizzit is a modern, space-themed quiz application built with [Next.js](https://nextjs.org), Supabase, and Prisma. It features animated UI, robust database integration, and a clean separation of concerns for maintainability and scalability.
+
+---
+
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Database Setup](#database-setup)
+- [Development Workflow](#development-workflow)
+- [Testing](#testing)
+- [Key Features](#key-features)
+- [API & Services](#api--services)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Project Structure
+
+See [`PROJECT_STRUCTURE.txt`](PROJECT_STRUCTURE.txt) for full details.
+
+**Root Files:**
+
+- `.env`, `.env.test` – Environment variables for dev and test
+- `package.json` – Scripts and dependencies
+- `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs` – Configuration files
+- `README.md`, `SETUP.md` – Documentation and setup instructions
+- `clearDb.ts`, `seed.ts` – Database utilities
+
+**Directories:**
+
+- `src/` – Main application code
+  - `app/` – Next.js App Router, pages, API routes
+  - `components/` – Reusable React components (QuizClient, EarthAnimation, etc.)
+  - `lib/` – Shared utilities (Supabase client, Prisma config)
+  - `services/` – Business logic (CountryService, QuestionService, TriviaService)
+  - `utils/` – Utility functions (decodeHTML, shuffleArray)
+  - `data/` – Static and test data
+- `prisma/` – Database schema, migrations, seed scripts
+- `generated/` – Generated Prisma client files
+- `public/` – Static assets
+
+**Testing:**
+
+- `__tests__/` – Jest test suites for DB and utilities
+
+---
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   ```bash
+   npm install
+   ```
+
+2. **Set up environment variables:**
+
+   - Copy `.env.example` to `.env` and fill in your Supabase credentials and database URL.
+   - Example:
+     ```
+     DATABASE_URL="postgresql://<user>:<password>@<host>:5432/<db>"
+     NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
+     ```
+
+3. **Generate Prisma client:**
+
+   ```bash
+   npx prisma generate
+   ```
+
+4. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+See [`SETUP.md`](SETUP.md) for more details.
+
+---
+
+## Environment Variables
+
+- `DATABASE_URL` – Supabase Postgres connection string
+- `NEXT_PUBLIC_SUPABASE_URL` – Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` – Supabase anon key
+
+---
+
+## Database Setup
+
+- **Supabase** is used for both database and authentication.
+- Tables are pre-created and migrated.
+- **Seeding:** Run `npm run seed` to populate the database.
+- **Test DB:** Use `.env.test` and scripts like `npm run test:db:push` for test database setup.
+
+See [`prisma/schema.prisma`](prisma/schema.prisma) for schema details.
+
+**Entity Relationship Diagram (ERD):**
+
+```mermaid
+erDiagram
+    USERS {
+      uuid id PK
+      string userName
+      string avatar
+      int highScore
+      int quizzBuckTotal
+      int questionsCorrect
+      datetime createdAt
+    }
+    GAMES {
+      uuid id PK
+      uuid userId FK
+      int score
+      int quizzBucksEarned
+      datetime playedAt
+    }
+    COUNTRIES {
+    userId     Int    PK
+    name       String
+    flagUrl    String
+    capital    String
+    currency   String
+    population Int
+    }
+
 ```
 
-# npm packages
+---
 
-npm install uuid
-npm install react-icons
-npm install react-countup
-npm install he
-npm install --save-dev @types/he
+## Development Workflow
 
-# Creating DB
+- `npm run dev` – Start dev server
+- `npm run build` – Build for production
+- `npm test` – Run Jest tests
+- `npx prisma db push` – Update DB schema
+- `npx prisma generate` – Generate Prisma client
+- `npm run seed` – Seed database
 
-for testing - create .env.test file
+---
 
-create your database eg in
+## Testing
 
-```psql
-createdb my_test_database;
+- **Jest** is used for unit and integration tests.
+- Test suites are in [`__tests__/`](__tests__/).
+- Use test DB scripts for isolated test environments.
 
-confirm it is created
-psql \d
+---
 
-add to .env.test file
-DATABASE_URL = my_test_database
+## Key Features
 
+- **Frontend:** Next.js 13+ App Router, React components, Tailwind CSS, animated globe, timer bar, QuizzBucks display.
+- **Backend:** RESTful API routes, Prisma ORM, Supabase integration, service layer architecture.
+- **Quiz Logic:** Mixed flag and trivia questions, "Did You Know" facts, timer bar, immediate feedback, leaderboard.
+- **Visuals:** Space theme, animated globe, custom scrollbars, responsive design.
 
-SEED TEST DB WITH TEST DATA
-seed:test": "NODE_ENV=test ts-node prisma/seed.ts", -- not sure if working
+---
 
-# Jest for Test-DB
+## API & Services
 
-*Add to package.json under* 'scripts'
-- "dev": "next dev",
-- "build": "next build",
-- "start": "next start",
-- "lint": "next lint",
-- "test": "NODE_ENV=test jest",
-- "test:watch": "NODE_ENV=test jest --watch",
-- "test:db:push": "dotenv -e .env.test -- npx prisma db push",
-- "test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
-- "test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
-- "test:db:studio": "dotenv -e .env.test -- npx prisma studio",
-- "db:seed": "tsx prisma/seed.ts"
-and to 'prisma'
-"seed": "tsx prisma/seed.ts"
+- **API Routes:** Located in `src/app/api/`
 
-create jest.config.js file
+  - `/countries` – Country data
+  - `/games` – Game records
+  - `/quiz/questions` – Quiz question generation
+  - `/trivia` – External trivia API
+  - `/users` – User management
+  - `/users/username` – get user by username
+  - `login` - Stores user session and basic authentication
+  - `logout` - Clears cookies from user session
 
+- **Services:** Encapsulate business logic (see `src/services/`)
 
+---
 
-setup
+## Deployment
 
-# Install dotenv-cli if you haven't
+- Environment-based configuration for production and development.
+- See Next.js and Supabase docs for deployment steps.
 
-npm install -D dotenv-cli
+---
 
-# Also tsx
+## Troubleshooting
 
-npm install tsx
+- **Prisma errors:** Run `npx prisma generate`
+- **Connection errors:** Check `.env` file
+- **Database issues:** Use Supabase dashboard
 
-# Push your schema to the test database
+---
 
-npm run test:db:push
+## Additional Notes
 
-# Or if you prefer migrations
+- See [`PROJECT_STRUCTURE.txt`](PROJECT_STRUCTURE.txt) for a full breakdown of files and architecture.
+- For API/service details, see comments in source files and [`README.md`](README.md).
 
-npm run test:db:migrate
-```
+---
 
-To test database, will have to add to test-seed file any new models and reintergrate. Then in test suite, set up and tear down db before each test.
+Created by Behnoud Halalipour, Jake Daniels, Brad Mattison and Joel Kram
 
-# API/ROUTES
+## License
 
-# SERVICES
-
-- util classes for api fetching and handling
-
-* Responsiblities
-  - TriviaService: Handles external API calls, timeouts, error handling
-  - CountryService: Manages data access (database/fallback data)
-  - QuizService: Contains logic for question generation
-  - API Handler: Orchestrates services and handles HTTP concerns
-
-# Log In
-
-Please login with Alice or as a Guest
+MIT
