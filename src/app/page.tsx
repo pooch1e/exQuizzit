@@ -102,6 +102,7 @@ export default function SeedUserPage() {
     try {
       const formData = new FormData();
       formData.append('username', 'guest');
+      formData.append('userId', '0');
 
       const response = await fetch('/api/login', {
         method: 'POST',
