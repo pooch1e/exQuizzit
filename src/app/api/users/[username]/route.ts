@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { username: string } }
 ) {
   try {
-    const { username } = params;
+    const { username } = await params;
 
     const user = await prisma.user.findFirst({
       where: { userName: username },
@@ -15,6 +15,7 @@ export async function GET(
         userName: true,
         highScore: true,
         questionsCorrect: true,
+        quizzBuckTotal: true,
         createdAt: true,
       },
     });

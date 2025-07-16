@@ -21,7 +21,7 @@ const themes: Theme[] = [
 ];
 
 interface LootboxSpinnerProps {
-  onSpin: () => boolean; // Returns true if spin is allowed (enough coins)
+  onSpin: () => Promise<boolean> | boolean; // Returns true if spin is allowed (enough coins)
   onWin: (theme: Theme) => void;
 }
 
@@ -34,10 +34,9 @@ export default function LootboxSpinner({ onSpin, onWin }: LootboxSpinnerProps) {
   const handleSpin = async () => {
     if (isSpinning) return;
 
-    // Check if player can spin (always true for now since it's free)
-    const canSpin = onSpin();
+    // Check if player can spin (handle both sync and async)
+    const canSpin = await onSpin();
     if (!canSpin) {
-      alert("Unable to spin right now. Please try again later.");
       return;
     }
 
@@ -114,7 +113,7 @@ export default function LootboxSpinner({ onSpin, onWin }: LootboxSpinnerProps) {
             : 'bg-amber-600 hover:bg-amber-700 hover:scale-105'
         }`}
       >
-        {isSpinning ? 'Spinning...' : 'Open Loot Box - FREE! 🎁'}
+        {isSpinning ? 'Spinning...' : 'Open Loot Box - 100 QB 💰'}
       </button>
 
       {/* Result Modal */}

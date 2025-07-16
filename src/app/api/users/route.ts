@@ -10,6 +10,7 @@ export async function GET() {
         userName: true,
         highScore: true,
         questionsCorrect: true,
+        quizzBuckTotal: true,
         createdAt: true,
       },
       orderBy: {
