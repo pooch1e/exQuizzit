@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import QuizClient from '../../components/QuizClient';
-
+import QuizClient from '../../components/quiz/QuizClient';
 
 interface Country {
   userId: number;
@@ -27,7 +26,6 @@ export default function QuizPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
 
   useEffect(() => {
     async function fetchQuestions() {
