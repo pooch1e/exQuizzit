@@ -3,7 +3,7 @@ import SpaceBackground from "@/components/SpaceBackground";
 import EarthAnimation from "@/components/EarthAnimation";
 import BackgroundMusic from "@/components/BackgroundMusic";
 import { cookies } from "next/headers";
-// import { getCurrentUser } from '../lib/utils/getCurrentUser';
+
 
 export default async function Home() {
   // Get the current logged-in user
