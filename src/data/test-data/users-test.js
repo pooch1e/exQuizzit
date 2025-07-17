@@ -5,7 +5,7 @@ export const users = [
     userName: 'Alice',
     avatar: 'https://api.dicebear.com/6.x/thumbs/svg?seed=Alice',
     highScore: 1200,
-    quizzBuckTotal: 500,
+    quizzBuckTotal: 2000,
     questionsCorrect: 87,
     createdAt: new Date('2024-07-01T10:00:00Z'),
   },
