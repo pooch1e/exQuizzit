@@ -16,7 +16,8 @@
     "test:db:migrate": "dotenv -e .env.test -- npx prisma migrate deploy",
     "test:db:reset": "dotenv -e .env.test -- npx prisma migrate reset --force",
     "test:db:studio": "dotenv -e .env.test -- npx prisma studio",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",
