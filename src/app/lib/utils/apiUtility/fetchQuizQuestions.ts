@@ -2,11 +2,9 @@ import { Question } from '@/types/Question.ts/Questions';
 
 export async function fetchQuizQuestions(): Promise<Question[] | null> {
   try {
-    // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-    // const result = await fetch(`${baseUrl}/api/quiz/questions`);
-    const result = await fetch('/api/quiz/questions');
-    
+    const result = await fetch(`${baseUrl}/api/quiz/questions`);
 
     if (!result.ok) {
       console.log('error fetching quiz questions');
@@ -14,7 +12,7 @@ export async function fetchQuizQuestions(): Promise<Question[] | null> {
     }
 
     const data = await result.json();
-    console.log('feteched questions correctly', data.questions)
+    console.log('feteched questions correctly', data.questions);
 
     // Ensure each question has the required 'type' property
     if (
