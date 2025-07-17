@@ -10,7 +10,7 @@ interface ProfilePageProps {
 }
 
 export default async function ProfilePage({ searchParams }: ProfilePageProps) {
-  console.log("inside profile section");
+  
 
   const params = await searchParams;
   let user;
@@ -22,9 +22,9 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
     // Get current logged-in user from cookies
     const cookieJar = await cookies();
     const username: string | undefined = cookieJar.get("username")?.value;
-    console.log(username, "username");
+    
     user = username ? await getUsers(username) : null;
-    console.log(user, "should be object");
+    
   }
 
   // Handle case where user is not found
