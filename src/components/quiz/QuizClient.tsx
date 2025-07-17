@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import SpaceBackground from '../SpaceBackground';
 import BackgroundMusic from '../BackgroundMusic';
@@ -74,6 +74,12 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
   const [disabledOptions, setDisabledOptions] = useState<string[]>([]);
   const [usedExtraLife, setUsedExtraLife] = useState(false);
 
+  // Memoize handleTimeUp to avoid use-before-declaration error and satisfy React hook deps
+  const handleTimeUp = useCallback(() => {
+    playIncorrectSound();
+    setShowWrongAnswer(true);
+  }, [playIncorrectSound]);
+
   // Timer countdown effect
   useEffect(() => {
     if (timeLeft > 0 && !showDidYouKnow && !showWrongAnswer && !quizComplete) {
@@ -83,11 +89,6 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
       handleTimeUp();
     }
   }, [timeLeft, showDidYouKnow, showWrongAnswer, quizComplete]);
-
-  const handleTimeUp = () => {
-    playIncorrectSound();
-    setShowWrongAnswer(true);
-  };
 
   const loadNewQuestions = async () => {
     setIsLoadingNewQuiz(true);
@@ -184,7 +185,7 @@ export default function QuizClient({ initialQuestions }: QuizClientProps) {
         console.log(err, 'Error updating QuizzBucks');
       }
     }
-    setQuizzBucks(quizzBucks + 10);
+    setQuizzBucks((quizzBucks ?? 0) + 10);
   };
 
   const handleNextFromCorrect = () => {

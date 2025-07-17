@@ -1,6 +1,6 @@
-import Error from '@/app/quiz/error';
 import QuizClient from './QuizClient';
 import { fetchQuizQuestions } from '@/app/lib/utils/apiUtility/fetchQuizQuestions';
+import { Question } from '@/types/Question.ts/Questions';
 
 export default async function QuizContent() {
   let questions: Question[] | null = null;
@@ -9,8 +9,11 @@ export default async function QuizContent() {
     questions = await fetchQuizQuestions();
   } catch (err) {
     console.log(err, 'err in fetching quiz questions');
-    <Error />;
+    return (
+      <div className="text-red-500 text-center mt-10">Failed to load quiz.</div>
+    );
   }
+
   if (!questions || questions.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center relative overflow-hidden">

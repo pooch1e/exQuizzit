@@ -1,11 +1,4 @@
-// Define the Question interface
-interface Question {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: string;
-  // Add other properties as needed
-}
+import { Question } from '@/types/Question.ts/Questions';
 
 export async function fetchQuizQuestions(): Promise<Question[] | null> {
   try {
@@ -21,7 +14,17 @@ export async function fetchQuizQuestions(): Promise<Question[] | null> {
     }
 
     const data = await result.json();
-    return data.questions;
+
+    // Ensure each question has the required 'type' property
+    if (
+      !Array.isArray(data.questions) ||
+      data.questions.some((q: Question) => !q.type)
+    ) {
+      console.error('Fetched questions missing required "type" property.');
+      return null;
+    }
+
+    return data.questions as Question[];
   } catch (err) {
     console.log(err);
     return null;
