@@ -2,9 +2,7 @@ import { Question } from '@/types/Question.ts/Questions';
 
 export async function fetchQuizQuestions(): Promise<Question[] | null> {
   try {
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     const result = await fetch(`${baseUrl}/api/quiz/questions`);
 
